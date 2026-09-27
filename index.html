@@ -412,6 +412,32 @@
   .day-check{ width:25px; height:25px; border-radius:50%; border:2px solid var(--border); flex:none; }
   .day-check.is-done{ border:none; display:flex; align-items:center; justify-content:center; color:#fff; }
   .day-check.is-done svg{ width:13px; height:13px; }
+
+  /* ---------- yapay zeka asistanı ---------- */
+  .ai-fab{
+    position:fixed; right:16px; bottom:calc(78px + env(safe-area-inset-bottom,0px)); z-index:40;
+    width:52px; height:52px; border-radius:50%; background:var(--accent); color:#fff; border:none;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.28); cursor:pointer;
+  }
+  .ai-fab svg{ width:23px; height:23px; }
+  .ai-modal{ display:flex; flex-direction:column; height:82vh; max-height:82vh; padding:0; }
+  .ai-modal-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border); flex:none; }
+  .ai-modal-title{ font-family:'Sora',sans-serif; font-weight:800; font-size:16px; }
+  .ai-thread{ flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .ai-msg{ max-width:84%; padding:10px 13px; border-radius:14px; font-size:14px; line-height:1.42; white-space:pre-wrap; word-break:break-word; }
+  .ai-msg.user{ align-self:flex-end; background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+  .ai-msg.bot{ align-self:flex-start; background:var(--surface-3); color:var(--text); border-bottom-left-radius:4px; }
+  .ai-msg.bot.is-error{ color:#D64545; }
+  .ai-typing{ align-self:flex-start; background:var(--surface-3); color:var(--text-faint); padding:10px 13px; border-radius:14px; font-size:13px; }
+  .ai-empty-hint{ color:var(--text-faint); font-size:13px; text-align:center; padding:22px 12px; line-height:1.5; }
+  .ai-inputbar{ display:flex; align-items:flex-end; gap:8px; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--border); flex:none; }
+  .ai-inputbar textarea{
+    flex:1; resize:none; border-radius:12px; border:1px solid var(--border); background:var(--surface-3); color:var(--text);
+    padding:10px 12px; font-size:14px; font-family:inherit; max-height:90px; line-height:1.35;
+  }
+  .ai-send-btn{ border:none; border-radius:12px; background:var(--accent); color:#fff; width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex:none; cursor:pointer; }
+  .ai-send-btn:disabled{ opacity:.5; }
+  .ai-send-btn svg{ width:19px; height:19px; }
 </style>
 </head>
 <body>
@@ -421,6 +447,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="ai-config.js"></script>
 <script id="app-logic">
 (function(){
   'use strict';
@@ -538,7 +565,9 @@
       flame:'<path d="M8.5 14.5c0 1.5 1.5 2.5 3 2.5s3-1 3-2.5c0-1.2-.5-2-1-3-1-2-.2-3.7 1.5-5.5.4 2 1.7 4 3.4 5.5 1.7 1.5 2.6 3.2 2.6 5 0 3.6-3.1 6.5-7 6.5s-7-2.9-7-6.5c0-1 .3-2 .8-2.7" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
       pulse:'<path d="M2 12h4l2-7 4 14 3-9 2 4h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
       home:'<path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
-      check:'<path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+      check:'<path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+      chat:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9.5L5 20.4a.6.6 0 0 1-1-.45V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/><circle cx="8.3" cy="10.5" r="1.05" fill="currentColor"/><circle cx="12" cy="10.5" r="1.05" fill="currentColor"/><circle cx="15.7" cy="10.5" r="1.05" fill="currentColor"/>',
+      send:'<path d="M3 11.2 20.5 3l-7.7 18-2.2-8.1-8.1-1.7Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'
     };
     return '<svg viewBox="0 0 24 24" class="' + (cls||'') + '" fill="none">' + (paths[name]||'') + '</svg>';
   }
@@ -742,6 +771,280 @@
     } catch(e){}
   }
   restoreUiState();
+
+  /* ---------- yapay zeka asistanı ---------- */
+  var AI_MODEL = 'claude-sonnet-5';
+  var AI_CHAT_KEY = 'spor-defteri-ai-chat-v1';
+  var aiOpen = false;
+  var aiBusy = false;
+  var aiMessages = loadAiMessages();
+
+  function loadAiMessages(){
+    try {
+      var raw = localStorage.getItem(AI_CHAT_KEY);
+      if (raw){ var arr = JSON.parse(raw); if (Array.isArray(arr)) return arr; }
+    } catch(e){}
+    return [];
+  }
+  function saveAiMessages(){
+    try { localStorage.setItem(AI_CHAT_KEY, JSON.stringify(aiMessages.slice(-40))); } catch(e){}
+  }
+  function appendAiMessage(role, text, isError){
+    aiMessages.push({ role: role, text: text, error: !!isError });
+    saveAiMessages();
+  }
+
+  var AI_TOOLS = [
+    {
+      name: 'set_workout_type',
+      description: 'Belirtilen günün antrenman türünü ayarlar.',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string', description:'YYYY-MM-DD. Belirtilmezse bugün kullanılır.' },
+          type:{ type:'string', enum:['push','pull','legs','upper','rest'] }
+        },
+        required:['type']
+      }
+    },
+    {
+      name: 'add_exercise_set',
+      description: 'Belirtilen güne, belirtilen egzersize bir set (tekrar × ağırlık) ekler. Egzersiz o gün için yoksa otomatik oluşturulur.',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string', description:'YYYY-MM-DD. Belirtilmezse bugün.' },
+          exerciseName:{ type:'string' },
+          reps:{ type:'number' },
+          weight:{ type:'number', description:'kg. Bilinmiyorsa göndermeyi atla.' }
+        },
+        required:['exerciseName','reps']
+      }
+    },
+    {
+      name: 'add_nutrition_entry',
+      description: 'Belirtilen güne bir öğün/yiyecek kaydı ekler.',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string' },
+          name:{ type:'string' },
+          calories:{ type:'number' },
+          protein:{ type:'number' },
+          fat:{ type:'number' },
+          carb:{ type:'number' }
+        },
+        required:['name','calories']
+      }
+    },
+    {
+      name: 'add_cardio_entry',
+      description: 'Belirtilen güne bir kardiyo kaydı ekler (yürüyüş, koşu, bisiklet vb).',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string' },
+          type:{ type:'string', description:'örn. Koşu, Yürüyüş, Bisiklet' },
+          durationMin:{ type:'number' },
+          distanceKm:{ type:'number' },
+          calories:{ type:'number' }
+        },
+        required:['type','durationMin']
+      }
+    },
+    {
+      name: 'log_weight',
+      description: 'Belirtilen tarih için kilo kaydı ekler.',
+      input_schema: {
+        type:'object',
+        properties:{ date:{type:'string'}, kg:{type:'number'} },
+        required:['kg']
+      }
+    },
+    {
+      name: 'set_steps',
+      description: 'Belirtilen günün adım sayısını ayarlar.',
+      input_schema: {
+        type:'object',
+        properties:{ date:{type:'string'}, steps:{type:'number'} },
+        required:['steps']
+      }
+    }
+  ];
+
+  function aiResolveDateKey(d){
+    if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    return keyForDate(new Date());
+  }
+
+  function executeAiTool(name, input){
+    input = input || {};
+    try {
+      if (name === 'set_workout_type'){
+        var swKey = aiResolveDateKey(input.date);
+        dayOf(swKey).workoutType = input.type;
+        scheduleSave(); renderAll();
+        return { ok:true, message: swKey + ' günü ' + input.type + ' olarak ayarlandı.' };
+      }
+      if (name === 'add_exercise_set'){
+        var aeKey = aiResolveDateKey(input.date);
+        var day = dayOf(aeKey);
+        var exName = String(input.exerciseName||'').trim();
+        var ex = day.exercises.filter(function(e){ return e.name.toLowerCase() === exName.toLowerCase(); })[0];
+        if (!ex){ ex = { id:newId(), name:exName, sets:[] }; day.exercises.push(ex); }
+        var w = (input.weight===undefined || input.weight===null || input.weight==='') ? null : Number(input.weight);
+        ex.sets.push({ reps:Number(input.reps)||0, weight:w });
+        scheduleSave(); renderAll();
+        return { ok:true, message: aeKey + ' gününe ' + exName + ': ' + (Number(input.reps)||0) + ' tekrar' + (w?(' x ' + w + 'kg'):'') + ' eklendi.' };
+      }
+      if (name === 'add_nutrition_entry'){
+        var anKey = aiResolveDateKey(input.date);
+        dayOf(anKey).nutrition.push({ id:newId(), name:input.name, calories:Number(input.calories)||0, protein:Number(input.protein)||0, fat:Number(input.fat)||0, carb:Number(input.carb)||0 });
+        scheduleSave(); renderAll();
+        return { ok:true, message: anKey + ' gününe "' + input.name + '" eklendi.' };
+      }
+      if (name === 'add_cardio_entry'){
+        var acKey = aiResolveDateKey(input.date);
+        var acDist = (input.distanceKm===undefined || input.distanceKm===null || input.distanceKm==='') ? null : Number(input.distanceKm);
+        var acCal = (input.calories===undefined || input.calories===null || input.calories==='') ? null : Number(input.calories);
+        dayOf(acKey).cardio.push({ id:newId(), type:input.type, durationMin:Number(input.durationMin)||0, distanceKm:acDist, calories:acCal });
+        scheduleSave(); renderAll();
+        return { ok:true, message: acKey + ' gününe ' + input.type + ' (' + (Number(input.durationMin)||0) + ' dk) eklendi.' };
+      }
+      if (name === 'log_weight'){
+        var lwKey = aiResolveDateKey(input.date);
+        state.weightLog.push({ id:newId(), date:lwKey, kg:Number(input.kg) });
+        scheduleSave(); renderAll();
+        return { ok:true, message: lwKey + ' için ' + input.kg + ' kg kaydedildi.' };
+      }
+      if (name === 'set_steps'){
+        var ssKey = aiResolveDateKey(input.date);
+        dayOf(ssKey).steps = (isFinite(Number(input.steps)) && Number(input.steps) > 0) ? Math.round(Number(input.steps)) : null;
+        scheduleSave(); renderAll();
+        return { ok:true, message: ssKey + ' günü için ' + input.steps + ' adım kaydedildi.' };
+      }
+      return { ok:false, message:'Bilinmeyen işlem: ' + name };
+    } catch(errTool){
+      return { ok:false, message:'Hata oluştu: ' + (errTool && errTool.message ? errTool.message : 'bilinmeyen') };
+    }
+  }
+
+  function buildAiSystemPrompt(){
+    var todayKey = keyForDate(new Date());
+    var stateForAi = {
+      bugununTarihi: todayKey,
+      ayarlar: state.settings,
+      haftalikPlan: state.plan,
+      antrenmanPlanlari: state.exercisePlans,
+      ogunPlani: state.mealPlan,
+      kiloGecmisi: state.weightLog,
+      gunler: state.days
+    };
+    var json = JSON.stringify(stateForAi);
+    if (json.length > 60000){
+      var keys = Object.keys(state.days).sort();
+      var recentKeys = keys.slice(-60);
+      var trimmedDays = {};
+      recentKeys.forEach(function(k){ trimmedDays[k] = state.days[k]; });
+      stateForAi.gunler = trimmedDays;
+      json = JSON.stringify(stateForAi);
+    }
+    return 'Sen kullanıcının "Spor Defteri" uygulamasındaki kişisel antrenman/beslenme/kardiyo asistanısın. ' +
+      'Türkçe, kısa ve samimi cevap ver, gereksiz uzatma. Kullanıcının güncel verisi (JSON) aşağıda; analitik sorularını ' +
+      '(örn. "bu hafta kaç antrenman yaptım", "ortalama proteinim ne") doğrudan bu veriden hesaplayıp cevapla. ' +
+      'Kullanıcı veri eklemeni/değiştirmeni isterse uygun aracı çağır; tarih belirtmezse bugünü (' + todayKey + ') kullan, ' +
+      'tarihler her zaman YYYY-MM-DD formatında olmalı. Belirsiz bir şey varsa (hangi gün, kaç kg/tekrar vb.) uydurmadan kısaca sor.' +
+      '\n\nGüncel veri:\n' + json;
+  }
+
+  async function runAiTurn(conversation){
+    for (var i = 0; i < 6; i++){
+      var res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+          'x-api-key': window.anthropicApiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body: JSON.stringify({
+          model: AI_MODEL,
+          max_tokens: 1024,
+          system: buildAiSystemPrompt(),
+          tools: AI_TOOLS,
+          messages: conversation
+        })
+      });
+      if (!res.ok){
+        var status = res.status;
+        throw new Error('API hatası (' + status + ')');
+      }
+      var data = await res.json();
+      var content = data.content || [];
+      conversation.push({ role:'assistant', content: content });
+
+      var toolUses = content.filter(function(c){ return c.type === 'tool_use'; });
+      if (!toolUses.length){
+        var textParts = content.filter(function(c){ return c.type === 'text'; }).map(function(c){ return c.text; });
+        return textParts.join('\n');
+      }
+      var toolResults = toolUses.map(function(tu){
+        var result = executeAiTool(tu.name, tu.input);
+        return { type:'tool_result', tool_use_id: tu.id, content: JSON.stringify(result) };
+      });
+      conversation.push({ role:'user', content: toolResults });
+    }
+    return 'İşlemi tamamlayamadım, çok fazla adım gerekti.';
+  }
+
+  async function sendAiMessage(userText){
+    if (!userText || !userText.trim()) return;
+    if (!window.anthropicApiKey){
+      appendAiMessage('user', userText);
+      appendAiMessage('bot', 'Yapay zeka henüz kurulmamış — ai-config.js dosyasına bir Anthropic API anahtarı eklenmesi gerekiyor.', true);
+      renderAll();
+      return;
+    }
+    appendAiMessage('user', userText);
+    aiBusy = true;
+    renderAll();
+    try {
+      var finalText = await runAiTurn([{ role:'user', content:userText }]);
+      appendAiMessage('bot', finalText || '(cevap alınamadı)');
+    } catch(errAi){
+      appendAiMessage('bot', 'Bir hata oldu: ' + (errAi && errAi.message ? errAi.message : 'bilinmeyen hata'), true);
+    }
+    aiBusy = false;
+    renderAll();
+  }
+
+  function renderAiFab(){
+    return '<button class="ai-fab" data-action="ai-open" aria-label="Yapay Zeka Asistanı">' + icon('chat') + '</button>';
+  }
+  function renderAiModal(){
+    var body = aiMessages.length
+      ? aiMessages.map(function(m){
+          return '<div class="ai-msg ' + (m.role==='user'?'user':'bot') + (m.error?' is-error':'') + '">' + esc(m.text) + '</div>';
+        }).join('')
+      : '<div class="ai-empty-hint">Merhaba! Antrenman, beslenme ve kardiyo verilerin hakkında soru sorabilir ya da benden veri eklememi/değiştirmemi isteyebilirsin.<br><br>Örnek: "bu hafta kaç kere antrenman yaptım" veya "bugünü push günü yap ve chest press 4x10 60kg ekle"</div>';
+    return '<div class="modal-overlay" data-action="ai-close">' +
+      '<div class="modal ai-modal" data-action="modal-noop">' +
+        '<div class="ai-modal-head">' +
+          '<div class="ai-modal-title">Yapay Zeka Asistanı</div>' +
+          '<button class="icon-btn" data-action="ai-close">' + icon('close') + '</button>' +
+        '</div>' +
+        '<div class="ai-thread" id="ai-thread">' + body + (aiBusy ? '<div class="ai-typing">yazıyor…</div>' : '') + '</div>' +
+        '<div class="ai-inputbar">' +
+          '<textarea id="ai-input" rows="1" placeholder="Bir şey sor ya da veri eklememi iste..."' + (aiBusy ? ' disabled' : '') + '></textarea>' +
+          '<button class="ai-send-btn" data-action="ai-send"' + (aiBusy ? ' disabled' : '') + '>' + icon('send') + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function scrollAiThreadToBottom(){
+    var el = document.getElementById('ai-thread');
+    if (el) el.scrollTop = el.scrollHeight;
+  }
 
   /* ---------- kilo takibi ---------- */
   function round10(n){ return Math.round(num(n)*10)/10; }
@@ -1019,9 +1322,12 @@
         (ui.mealPlanOpen ? renderMealPlanModal() : '') +
         (ui.weightModalOpen ? renderWeightModal() : '') +
         (ui.exerciseHistoryName ? renderExerciseHistoryModal(ui.exerciseHistoryName) : '') +
+        renderAiFab() +
+        (aiOpen ? renderAiModal() : '') +
       '</div>';
     renderHeaderStatus();
     saveUiState();
+    if (aiOpen) scrollAiThreadToBottom();
   }
 
   var TAB_LABELS = { home:'Ana Sayfa', nutrition:'Beslenme', workout:'Antrenman', cardio:'Kardiyo' };
@@ -2082,6 +2388,12 @@
 
   /* ---------- olaylar ---------- */
   document.getElementById('root').addEventListener('click', onRootClick);
+  document.getElementById('root').addEventListener('keydown', function(e){
+    if (e.target && e.target.id === 'ai-input' && e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      if (!aiBusy) sendAiMessage(e.target.value);
+    }
+  });
 
   function onRootClick(e){
     var btn = e.target.closest('[data-action]');
@@ -2124,6 +2436,15 @@
     if (action === 'open-exercise-history'){ ui.exerciseHistoryName = btn.getAttribute('data-name'); renderAll(); return; }
     if (action === 'close-exercise-history'){ ui.exerciseHistoryName = null; renderAll(); return; }
     if (action === 'modal-noop'){ return; }
+    if (action === 'ai-open'){ aiOpen = true; renderAll(); return; }
+    if (action === 'ai-close'){ aiOpen = false; renderAll(); return; }
+    if (action === 'ai-send'){
+      if (aiBusy) return;
+      var aiInputEl = document.getElementById('ai-input');
+      var aiTextVal = aiInputEl ? aiInputEl.value : '';
+      sendAiMessage(aiTextVal);
+      return;
+    }
     if (action === 'open-settings'){ ui.settingsOpen = true; renderAll(); return; }
     if (action === 'close-settings'){ ui.settingsOpen = false; renderAll(); return; }
     if (action === 'open-plan'){ ui.planOpen = true; renderAll(); return; }
