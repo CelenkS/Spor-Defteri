@@ -136,6 +136,8 @@
   .hero-bar-track{ height:7px; border-radius:99px; background:rgba(255,255,255,.25); margin-top:14px; overflow:hidden; }
   .hero-bar-fill{ height:100%; border-radius:99px; background:#fff; }
   .hero-foot{ display:flex; justify-content:space-between; margin-top:8px; font-size:11.5px; opacity:.85; }
+  .hero-tap-hint{ display:flex; align-items:center; gap:3px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,.18); font-size:11.5px; font-weight:700; opacity:.9; }
+  .hero-tap-hint svg{ width:13px; height:13px; }
 
   .breakdown-toggle{ display:flex; background:var(--surface-2); border-radius:11px; padding:3px; margin:16px 0 10px; }
   .bd-row{ display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid var(--border); }
@@ -489,6 +491,20 @@
   'use strict';
 
   var LOCAL_KEY = 'spor-defteri-state-v1';
+  var THEME_KEY = 'spor-defteri-theme-v1';
+  function loadTheme(){
+    try {
+      var t = localStorage.getItem(THEME_KEY);
+      if (t === 'light' || t === 'dark' || t === 'system') return t;
+    } catch(e){}
+    return 'system';
+  }
+  function applyTheme(t){
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    else document.documentElement.removeAttribute('data-theme');
+  }
+  var currentTheme = loadTheme();
+  applyTheme(currentTheme);
   var WEEKDAYS_SHORT = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
   var WEEKDAYS_FULL = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
   var MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
@@ -1766,12 +1782,14 @@
     var goalK = s.goalCarb * dayCount;
     var pctCal = goalCal>0 ? Math.min(100, (t.cal/goalCal)*100) : 0;
 
-    var html = '<div class="hero-card">' + heroWatermark('food') +
+    var heroTapAttrs = scope==='day' ? ' data-action="open-today-detail" data-tab="nutrition" style="cursor:pointer"' : '';
+    var html = '<div class="hero-card"' + heroTapAttrs + '>' + heroWatermark('food') +
       '<div class="hero-top"><div><div class="hero-label">' + label + '</div>' +
       '<div class="hero-big">' + t.cal.toLocaleString('tr-TR') + '<span>/ ' + goalCal.toLocaleString('tr-TR') + ' kcal</span></div></div>' +
       '<div class="hero-pill">%' + round(pctCal) + '</div></div>' +
       '<div class="hero-bar-track"><div class="hero-bar-fill" style="width:' + pctCal + '%"></div></div>' +
       '<div class="hero-foot"><span>Günlük hedef ' + s.goalCalories.toLocaleString('tr-TR') + ' kcal</span><span>Ort. gün ' + round(t.cal/dayCount) + ' kcal</span></div>' +
+      (scope==='day' ? '<div class="hero-tap-hint">Girmek için dokun ' + icon('chevronR') + '</div>' : '') +
     '</div>';
 
     html += '<div class="stat-grid">' +
@@ -2031,11 +2049,12 @@
     if (scope === 'day'){
       var s0 = dayWorkoutSummary(days[0]);
       var ti0 = typeInfo(s0.type);
-      return '<div class="hero-card">' + heroWatermark('dumbbell') +
+      return '<div class="hero-card" data-action="open-today-detail" data-tab="workout" style="cursor:pointer">' + heroWatermark('dumbbell') +
         '<div class="hero-top"><div><div class="hero-label">' + label + '</div>' +
         '<div class="hero-big" style="font-size:22px">' + ti0.label + '</div></div>' +
         '<div class="hero-pill">' + (s0.type==='rest' ? 'Dinlenme' : (s0.done ? 'Tamamlandı ✓' : 'Bekliyor')) + '</div></div>' +
         (s0.type!=='rest' ? ('<div class="hero-foot"><span>' + s0.setCount + ' set</span><span>' + s0.volume.toLocaleString('tr-TR') + ' kg hacim</span></div>') : '') +
+        '<div class="hero-tap-hint">Girmek için dokun ' + icon('chevronR') + '</div>' +
       '</div>';
     }
 
@@ -2159,12 +2178,14 @@
     var st = sumStepsForDays(days);
     var goalMin = scope==='day' ? Math.round(s.cardioGoalMinPerWeek/7) : s.cardioGoalMinPerWeek * weeksCount;
     var pct = goalMin>0 ? Math.min(100, (t.durationMin/goalMin)*100) : 0;
-    return '<div class="hero-card">' + heroWatermark('pulse') +
+    var cardioTapAttrs = scope==='day' ? ' data-action="open-today-detail" data-tab="cardio" style="cursor:pointer"' : '';
+    return '<div class="hero-card"' + cardioTapAttrs + '>' + heroWatermark('pulse') +
       '<div class="hero-top"><div><div class="hero-label">' + label + '</div>' +
       '<div class="hero-big">' + t.durationMin + '<span>/ ' + goalMin + ' dk hedef</span></div></div>' +
       '<div class="hero-pill">%' + round(pct) + '</div></div>' +
       '<div class="hero-bar-track"><div class="hero-bar-fill" style="width:' + pct + '%"></div></div>' +
       '<div class="hero-foot"><span>' + t.count + ' kayıt · ' + st.steps.toLocaleString('tr-TR') + ' adım</span><span>' + (t.calories+st.calories).toLocaleString('tr-TR') + ' kcal yakıldı</span></div>' +
+      (scope==='day' ? '<div class="hero-tap-hint">Girmek için dokun ' + icon('chevronR') + '</div>' : '') +
     '</div>';
   }
 
@@ -2421,6 +2442,11 @@
     var s = state.settings;
     return '<div class="modal-overlay" data-action="close-settings"><div class="modal" data-action="modal-noop">' +
       '<div class="modal-head"><div class="modal-title">Hedefler</div><button class="icon-btn" data-action="close-settings">' + icon('close') + '</button></div>' +
+      '<div class="field" style="margin-bottom:14px"><label>Görünüm</label><div class="period-toggle" style="margin:0">' +
+        [{key:'light',label:'Aydınlık'},{key:'dark',label:'Karanlık'},{key:'system',label:'Sistem'}].map(function(t){
+          return '<button type="button" class="period-btn' + (currentTheme===t.key?' is-active':'') + '" data-action="set-theme" data-theme="' + t.key + '">' + t.label + '</button>';
+        }).join('') +
+      '</div></div>' +
       '<div class="form">' +
         '<div class="field"><label>Günlük kalori hedefi</label><input id="s-cal" type="number" inputmode="numeric" value="' + s.goalCalories + '"></div>' +
         '<div class="field-row cols-2">' +
@@ -2736,6 +2762,12 @@
       var aiTextVal = aiInputEl ? aiInputEl.value : '';
       sendAiMessage(aiTextVal);
       return;
+    }
+    if (action === 'set-theme'){
+      currentTheme = btn.getAttribute('data-theme');
+      applyTheme(currentTheme);
+      try { localStorage.setItem(THEME_KEY, currentTheme); } catch(e){}
+      renderAll(); return;
     }
     if (action === 'open-settings'){ ui.settingsOpen = true; renderAll(); return; }
     if (action === 'close-settings'){ ui.settingsOpen = false; renderAll(); return; }
