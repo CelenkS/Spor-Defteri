@@ -1,0 +1,47 @@
+name: Deploy Spor Defteri to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Anthropic API anahtarını ai-config.js'e yaz
+        run: |
+          printf 'window.anthropicApiKey = "%s";\n' "$ANTHROPIC_API_KEY" > ai-config.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Pages ayarla
+        uses: actions/configure-pages@v5
+
+      - name: Artifact yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pages'e dağıt
+        id: deployment
+        uses: actions/deploy-pages@v4
