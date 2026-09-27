@@ -320,17 +320,20 @@
   .home-greet{ padding:8px 2px 2px; }
   .home-greet-label{ font-family:'Sora',sans-serif; font-weight:800; font-size:22px; letter-spacing:-.3px; }
   .home-greet-date{ font-size:12.5px; color:var(--text-faint); margin-top:2px; font-weight:500; }
-  .home-tile-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:9px; margin-top:8px; }
+  .home-tile-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:8px; }
   .home-tile{
-    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:11px 10px;
-    box-shadow:var(--shadow); text-align:left; display:flex; flex-direction:column; gap:7px; width:100%;
+    position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:12px 13px 13px;
+    box-shadow:var(--shadow); text-align:left; display:flex; flex-direction:column; gap:2px; width:100%;
   }
-  .home-tile-icon{ width:28px; height:28px; border-radius:9px; display:flex; align-items:center; justify-content:center; }
-  .home-tile-icon svg{ width:15px; height:15px; }
-  .home-tile-label{ font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.04em; }
-  .home-tile-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:-.2px; }
-  .home-tile-sub{ font-size:10px; color:var(--text-faint); font-weight:600; }
-  .home-tile-bar{ height:4px; border-radius:99px; background:var(--surface-2); overflow:hidden; margin-top:1px; }
+  .home-tile::before{ content:''; position:absolute; top:-34px; right:-34px; width:96px; height:96px; border-radius:50%; background:var(--tile-soft); opacity:.55; pointer-events:none; }
+  .home-tile-top{ display:flex; align-items:center; justify-content:space-between; position:relative; margin-bottom:3px; }
+  .home-tile-icon{ width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; position:relative; flex:none; }
+  .home-tile-icon svg{ width:16px; height:16px; }
+  .home-tile-pct{ position:relative; font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:999px; }
+  .home-tile-label{ font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.04em; position:relative; }
+  .home-tile-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:16.5px; letter-spacing:-.2px; margin-top:2px; position:relative; }
+  .home-tile-sub{ font-size:10.5px; color:var(--text-faint); font-weight:600; margin-top:1px; position:relative; }
+  .home-tile-bar{ height:5px; border-radius:99px; background:var(--surface-2); overflow:hidden; margin-top:8px; position:relative; }
   .home-tile-bar-fill{ height:100%; border-radius:99px; }
   .home-week-row{ display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid var(--border); }
   .home-week-row:last-child{ border-bottom:none; }
@@ -360,20 +363,53 @@
   .hero-watermark svg{ width:100%; height:100%; }
 
   .net-cal-card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:15px 14px; box-shadow:var(--shadow); margin-top:12px; }
+  .net-cal-head{ display:flex; align-items:center; gap:9px; }
+  .net-cal-icon{ width:26px; height:26px; border-radius:8px; background:var(--cal-soft); color:var(--cal); display:flex; align-items:center; justify-content:center; flex:none; }
+  .net-cal-icon svg{ width:14px; height:14px; }
   .net-cal-label{ font-size:11.5px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; }
-  .net-cal-row{ display:flex; align-items:center; justify-content:space-between; margin-top:11px; gap:2px; }
+  .net-cal-row{ display:flex; align-items:center; justify-content:space-between; margin-top:13px; gap:2px; }
   .net-cal-item{ flex:1; text-align:center; min-width:0; }
   .net-cal-item-label{ font-size:10px; color:var(--text-faint); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
   .net-cal-item-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:17px; margin-top:4px; letter-spacing:-.2px; }
   .net-cal-op{ font-size:15px; font-weight:700; color:var(--text-faint); flex:none; padding:0 2px; }
+  .net-cal-split{ display:flex; height:7px; border-radius:99px; overflow:hidden; margin-top:14px; background:var(--surface-2); }
+  .net-cal-split-in{ background:var(--cal); }
+  .net-cal-split-out{ background:var(--good); }
 
-  .week-strip{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:8px; }
-  .week-strip-cell{ border:1px solid var(--border); border-radius:12px; padding:8px 1px; display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .week-strip-cell.is-today{ box-shadow:0 0 0 2px var(--accent) inset; }
+  .week-strip{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+  .week-strip-cell{ border:1px solid var(--border); border-radius:14px; padding:9px 1px 8px; display:flex; flex-direction:column; align-items:center; gap:5px; box-shadow:var(--shadow); }
+  .week-strip-cell.is-today{ box-shadow:0 0 0 2px var(--accent) inset, var(--shadow); }
   .week-strip-wd{ font-size:9px; font-weight:700; opacity:.75; text-transform:uppercase; letter-spacing:.02em; }
-  .week-strip-num{ font-family:'Sora',sans-serif; font-weight:800; font-size:13.5px; }
-  .week-strip-dots{ display:flex; gap:2px; min-height:5px; align-items:center; }
-  .week-strip-dot{ width:4.5px; height:4.5px; border-radius:50%; }
+  .week-strip-num{ font-family:'Sora',sans-serif; font-weight:800; font-size:14px; }
+  .week-strip-cell.is-today .week-strip-num{ color:var(--accent); }
+  .week-strip-dots{ display:flex; gap:2.5px; min-height:5px; align-items:center; }
+  .week-strip-dot{ width:5px; height:5px; border-radius:50%; }
+
+  /* ---------- vücut ölçüleri & fotoğraf ---------- */
+  .measure-chip-row{ display:flex; gap:8px; overflow-x:auto; margin-top:12px; padding-bottom:2px; }
+  .measure-chip{ flex:none; min-width:84px; background:var(--surface-3); border:1px solid var(--border); border-radius:13px; padding:9px 11px; }
+  .measure-chip-label{ font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.03em; }
+  .measure-chip-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:15px; margin-top:4px; }
+  .measure-chip-val span{ font-size:10.5px; font-weight:600; color:var(--text-faint); margin-left:2px; }
+  .measure-chip-delta{ font-size:10.5px; font-weight:700; color:var(--good); margin-top:3px; }
+  .measure-chip-delta.is-muted{ color:var(--text-faint); font-weight:600; }
+  .measure-photo-row{ display:flex; gap:8px; margin-top:12px; }
+  .measure-photo-thumb{ position:relative; flex:1; border-radius:12px; overflow:hidden; aspect-ratio:3/4; background:var(--surface-2); }
+  .measure-photo-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .measure-photo-tag{ position:absolute; left:0; right:0; bottom:0; padding:5px 8px; font-size:10px; font-weight:700; color:#fff; background:linear-gradient(0deg, rgba(0,0,0,.55), transparent); }
+  .measure-site-chip-row{ display:flex; gap:6px; overflow-x:auto; padding:2px 0 4px; }
+  .measure-compare-row{ display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--border); }
+  .measure-compare-row:last-child{ border-bottom:none; }
+  .measure-compare-label{ font-weight:600; font-size:13.5px; flex:1; min-width:0; }
+  .measure-compare-vals{ display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--text-faint); flex:none; }
+  .measure-compare-delta{ font-weight:800; font-size:13.5px; flex:none; width:64px; text-align:right; }
+  .measure-photo-compare{ display:flex; gap:10px; margin-top:4px; }
+  .measure-photo-compare .measure-photo-thumb{ aspect-ratio:3/4; }
+  .measure-photo-days{ text-align:center; font-size:11.5px; color:var(--text-faint); margin-top:8px; }
+  .measure-photo-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:4px; }
+  .measure-photo-grid .measure-photo-thumb{ aspect-ratio:1; }
+  .measure-photo-grid .del-btn{ position:absolute; top:2px; right:2px; background:rgba(0,0,0,.45); border-radius:8px; color:#fff; }
+  .measure-photo-grid .del-btn svg{ width:14px; height:14px; }
 
   .steps-card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); margin-bottom:14px; }
   .steps-card-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
@@ -567,7 +603,9 @@
       home:'<path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
       check:'<path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
       chat:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9.5L5 20.4a.6.6 0 0 1-1-.45V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/><circle cx="8.3" cy="10.5" r="1.05" fill="currentColor"/><circle cx="12" cy="10.5" r="1.05" fill="currentColor"/><circle cx="15.7" cy="10.5" r="1.05" fill="currentColor"/>',
-      send:'<path d="M3 11.2 20.5 3l-7.7 18-2.2-8.1-8.1-1.7Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'
+      send:'<path d="M3 11.2 20.5 3l-7.7 18-2.2-8.1-8.1-1.7Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>',
+      ruler:'<path d="M4.5 15.5 15.5 4.5a1.5 1.5 0 0 1 2.1 0l1.9 1.9a1.5 1.5 0 0 1 0 2.1L8.5 19.5a1.5 1.5 0 0 1-2.1 0l-1.9-1.9a1.5 1.5 0 0 1 0-2.1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M13 7l1.6 1.6M10.4 9.6 12 11.2M7.8 12.2l1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      camera:'<path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6A1 1 0 0 1 9 5h6a1 1 0 0 1 .86.5L16.8 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.6" fill="none"/>'
     };
     return '<svg viewBox="0 0 24 24" class="' + (cls||'') + '" fill="none">' + (paths[name]||'') + '</svg>';
   }
@@ -645,6 +683,8 @@
       exercisePlans: defaultExercisePlans(),
       mealPlan: defaultMealPlan(),
       weightLog:[],
+      measurements:[],
+      photos:[],
       days:{}
     };
   }
@@ -659,6 +699,8 @@
       exercisePlans: Object.assign({}, d.exercisePlans, s.exercisePlans||{}),
       mealPlan: Array.isArray(s.mealPlan) ? s.mealPlan : [],
       weightLog: Array.isArray(s.weightLog) ? s.weightLog : [],
+      measurements: Array.isArray(s.measurements) ? s.measurements : [],
+      photos: Array.isArray(s.photos) ? s.photos : [],
       days: {}
     };
     PLAN_TYPES.forEach(function(t){ if (!Array.isArray(out.exercisePlans[t])) out.exercisePlans[t] = []; });
@@ -720,6 +762,8 @@
     planOpen: false,
     mealPlanOpen: false,
     weightModalOpen: false,
+    measureModalOpen: false,
+    measurePhotoCompareId: null,
     breakdownView: 'macro',
     homeMacroExpanded: false,
     homeWorkoutExpanded: false,
@@ -737,6 +781,7 @@
         cursor: keyForDate(ui.cursor),
         dayDetailKey: ui.dayDetailKey, dayDetailKind: ui.dayDetailKind,
         settingsOpen: ui.settingsOpen, planOpen: ui.planOpen, mealPlanOpen: ui.mealPlanOpen, weightModalOpen: ui.weightModalOpen,
+        measureModalOpen: ui.measureModalOpen,
         homeMacroExpanded: ui.homeMacroExpanded, homeWorkoutExpanded: ui.homeWorkoutExpanded,
         exerciseHistoryName: ui.exerciseHistoryName,
         selectedRegion: ui.selectedRegion,
@@ -761,6 +806,7 @@
       ui.planOpen = !!snap.planOpen;
       ui.mealPlanOpen = !!snap.mealPlanOpen;
       ui.weightModalOpen = !!snap.weightModalOpen;
+      ui.measureModalOpen = !!snap.measureModalOpen;
       ui.homeMacroExpanded = !!snap.homeMacroExpanded;
       ui.homeWorkoutExpanded = !!snap.homeWorkoutExpanded;
       if (snap.exerciseHistoryName) ui.exerciseHistoryName = snap.exerciseHistoryName;
@@ -869,6 +915,19 @@
         properties:{ date:{type:'string'}, steps:{type:'number'} },
         required:['steps']
       }
+    },
+    {
+      name: 'log_measurement',
+      description: 'Belirtilen tarih için bir vücut ölçüsü (biceps, bel, göğüs, kalça, uyluk, baldır, omuz, boyun, önkol vb.) kaydeder.',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string', description:'YYYY-MM-DD. Belirtilmezse bugün.' },
+          site:{ type:'string', description:'Ölçülen bölge, örn. Biceps, Bel, Göğüs' },
+          valueCm:{ type:'number', description:'Santimetre cinsinden ölçü' }
+        },
+        required:['site','valueCm']
+      }
     }
   ];
 
@@ -923,6 +982,15 @@
         scheduleSave(); renderAll();
         return { ok:true, message: ssKey + ' günü için ' + input.steps + ' adım kaydedildi.' };
       }
+      if (name === 'log_measurement'){
+        var lmKey = aiResolveDateKey(input.date);
+        var lmSite = String(input.site||'').trim();
+        var lmVal = Number(input.valueCm);
+        if (!lmSite || !isFinite(lmVal) || lmVal <= 0) return { ok:false, message:'Geçersiz bölge veya değer.' };
+        state.measurements.push({ id:newId(), date:lmKey, site:lmSite, valueCm:lmVal });
+        scheduleSave(); renderAll();
+        return { ok:true, message: lmKey + ' için ' + lmSite + ' ölçüsü ' + lmVal + ' cm olarak kaydedildi.' };
+      }
       return { ok:false, message:'Bilinmeyen işlem: ' + name };
     } catch(errTool){
       return { ok:false, message:'Hata oluştu: ' + (errTool && errTool.message ? errTool.message : 'bilinmeyen') };
@@ -938,6 +1006,7 @@
       antrenmanPlanlari: state.exercisePlans,
       ogunPlani: state.mealPlan,
       kiloGecmisi: state.weightLog,
+      vucutOlcumleri: state.measurements,
       gunler: state.days
     };
     var json = JSON.stringify(stateForAi);
@@ -1067,6 +1136,60 @@
     if (goal < 0) return actual <= goal;
     if (goal > 0) return actual >= goal;
     return true;
+  }
+
+  /* ---------- vücut ölçüleri & fotoğraf takibi ---------- */
+  var MEASURE_SITES = ['Biceps','Göğüs','Bel','Kalça','Uyluk','Baldır','Omuz','Boyun','Önkol'];
+  function measureSiteLabel(site){ return site || ''; }
+  function sortedMeasurements(){
+    return (state.measurements||[]).slice().sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+  }
+  function measurementSiteKeysInUse(){
+    var seen = {}; var order = [];
+    sortedMeasurements().forEach(function(m){ if (!seen[m.site]){ seen[m.site]=true; order.push(m.site); } });
+    return order;
+  }
+  function measurementsForSite(site){
+    return sortedMeasurements().filter(function(m){ return m.site === site; });
+  }
+  function measurementComparison(site){
+    var list = measurementsForSite(site);
+    if (!list.length) return null;
+    var first = list[0], latest = list[list.length-1];
+    return { site:site, label:measureSiteLabel(site), first:first, latest:latest, delta:round10(latest.valueCm - first.valueCm), count:list.length };
+  }
+  function allMeasurementComparisons(){
+    return measurementSiteKeysInUse().map(measurementComparison).filter(Boolean);
+  }
+  function sortedPhotos(){
+    return (state.photos||[]).slice().sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+  }
+  function latestMeasurement(){
+    var all = sortedMeasurements();
+    return all.length ? all[all.length-1] : null;
+  }
+  function resizeImageFileToDataUrl(file, maxDim, quality){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          var scale = Math.min(1, maxDim / Math.max(w, h));
+          var tw = Math.max(1, Math.round(w * scale)), th = Math.max(1, Math.round(h * scale));
+          var canvas = document.createElement('canvas');
+          canvas.width = tw; canvas.height = th;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, tw, th);
+          try { resolve(canvas.toDataURL('image/jpeg', quality)); }
+          catch(errCanvas){ reject(errCanvas); }
+        };
+        img.onerror = function(){ reject(new Error('görsel okunamadı')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error('dosya okunamadı')); };
+      reader.readAsDataURL(file);
+    });
   }
 
   /* ---------- hafta gruplama ---------- */
@@ -1321,6 +1444,7 @@
         (ui.planOpen ? renderPlanModal() : '') +
         (ui.mealPlanOpen ? renderMealPlanModal() : '') +
         (ui.weightModalOpen ? renderWeightModal() : '') +
+        (ui.measureModalOpen ? renderMeasureModal() : '') +
         (ui.exerciseHistoryName ? renderExerciseHistoryModal(ui.exerciseHistoryName) : '') +
         renderAiFab() +
         (aiOpen ? renderAiModal() : '') +
@@ -1373,10 +1497,17 @@
 
   /* ---------- Ana Sayfa ---------- */
   function homeTile(tab, iconName, label, valText, subText, pct, colorVar, softVar){
-    var barHtml = (pct===null || pct===undefined) ? '' : '<div class="home-tile-bar"><div class="home-tile-bar-fill" style="width:' + Math.max(0,Math.min(100,pct)) + '%;background:var(' + colorVar + ')"></div></div>';
-    return '<button type="button" class="home-tile" data-action="open-home-tile" data-tab="' + tab + '">' +
-      '<div class="home-tile-icon" style="background:var(' + softVar + ');color:var(' + colorVar + ')">' + icon(iconName) + '</div>' +
-      '<div><div class="home-tile-label">' + label + '</div><div class="home-tile-val">' + valText + '</div><div class="home-tile-sub">' + subText + '</div></div>' +
+    var pctClamped = (pct===null || pct===undefined) ? null : Math.max(0, Math.min(100, pct));
+    var badge = pctClamped===null ? '' : '<span class="home-tile-pct" style="background:var(' + softVar + ');color:var(' + colorVar + ')">%' + Math.round(pctClamped) + '</span>';
+    var barHtml = pctClamped===null ? '' : '<div class="home-tile-bar"><div class="home-tile-bar-fill" style="width:' + pctClamped + '%;background:var(' + colorVar + ')"></div></div>';
+    return '<button type="button" class="home-tile" data-action="open-home-tile" data-tab="' + tab + '" style="--tile-soft:var(' + softVar + ')">' +
+      '<div class="home-tile-top">' +
+        '<div class="home-tile-icon" style="background:var(' + softVar + ');color:var(' + colorVar + ')">' + icon(iconName) + '</div>' +
+        badge +
+      '</div>' +
+      '<div class="home-tile-label">' + label + '</div>' +
+      '<div class="home-tile-val">' + valText + '</div>' +
+      '<div class="home-tile-sub">' + subText + '</div>' +
       barHtml +
     '</button>';
   }
@@ -1424,7 +1555,6 @@
     var streakBadge = gami.streak > 0 ? ('<span class="streak-badge">' + icon('flame') + gami.streak + ' gün seri</span>') : '';
 
     var html = '<div class="home-greet"><div class="home-greet-label">' + greeting + streakBadge + '</div><div class="home-greet-date">' + dateLabel + '</div></div>';
-    html += renderLevelCard();
 
     var hp = ui.homePeriod;
     var hpLabel = hp==='day' ? 'Bugün' : hp==='week' ? 'Bu Hafta' : 'Bu Ay';
@@ -1465,20 +1595,26 @@
       '</div>';
     }
 
-    html += '<div class="net-cal-card"><div class="net-cal-label">' + hpLabel + ' Net Kalori</div>' +
+    var netCalTotal = scopeNut.cal + scopeBurned;
+    var netCalInPct = netCalTotal > 0 ? (scopeNut.cal / netCalTotal) * 100 : 50;
+    html += '<div class="net-cal-card">' +
+      '<div class="net-cal-head"><span class="net-cal-icon">' + icon('flame') + '</span><div class="net-cal-label">' + hpLabel + ' Net Kalori</div></div>' +
       '<div class="net-cal-row">' +
         '<div class="net-cal-item"><div class="net-cal-item-label">Alınan</div><div class="net-cal-item-val" style="color:var(--cal)">' + round(scopeNut.cal).toLocaleString('tr-TR') + '</div></div>' +
         '<div class="net-cal-op">−</div>' +
         '<div class="net-cal-item"><div class="net-cal-item-label">Yakılan</div><div class="net-cal-item-val" style="color:var(--good)">' + round(scopeBurned).toLocaleString('tr-TR') + '</div></div>' +
         '<div class="net-cal-op">=</div>' +
         '<div class="net-cal-item"><div class="net-cal-item-label">Net</div><div class="net-cal-item-val">' + round(scopeNut.cal - scopeBurned).toLocaleString('tr-TR') + '</div></div>' +
-      '</div></div>';
+      '</div>' +
+      '<div class="net-cal-split"><div class="net-cal-split-in" style="width:' + netCalInPct + '%"></div><div class="net-cal-split-out" style="width:' + (100-netCalInPct) + '%"></div></div>' +
+    '</div>';
 
     html += '<div class="section-title">Bu Hafta Genel Bakış</div>' + homeWeekStrip();
 
     html += '<div class="section-title">' + hpLabel + ' Detay</div>' + homeDetailSection(hp, scopeDays, scopeNut, scopeCardio, scopeSteps);
 
     html += renderWeightCard();
+    html += renderMeasureCard();
 
     return html;
   }
@@ -1674,6 +1810,46 @@
         '<div><div class="stat-card-label">Aylık</div><div class="num" style="font-weight:700;font-size:14px;color:var(' + (monthGood?'--good':'--bad') + ')">' + (monthChange>0?'+':'') + monthChange + ' kg</div><div class="hint">hedef ' + s.monthlyWeightGoalKg + ' kg</div></div>' +
       '</div>' +
     '</div>';
+  }
+
+  /* ---------- vücut ölçüleri kartı (ana sayfa) ---------- */
+  function photoThumb(p, tagLabel){
+    return '<div class="measure-photo-thumb"><img src="' + p.dataUrl + '" alt=""><span class="measure-photo-tag">' + tagLabel + ' · ' + p.date + '</span></div>';
+  }
+  function renderMeasureCard(){
+    var comparisons = allMeasurementComparisons();
+    var photos = sortedPhotos();
+    if (!comparisons.length && !photos.length){
+      return '<div class="stat-card measure-card" style="margin-top:10px">' +
+        '<div class="stat-card-label">Vücut Ölçüleri</div>' +
+        '<div class="hint" style="margin-top:8px">Henüz ölçüm veya fotoğraf yok.</div>' +
+        '<button type="button" class="btn btn-ghost btn-sm btn-block" style="margin-top:10px" data-action="open-measure-modal">' + icon('plus') + ' Ölçüm / Fotoğraf Ekle</button>' +
+      '</div>';
+    }
+    var html = '<div class="stat-card measure-card" style="margin-top:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div class="stat-card-label">Vücut Ölçüleri</div>' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-action="open-measure-modal">' + icon('plus') + ' Gir</button>' +
+      '</div>';
+    if (comparisons.length){
+      html += '<div class="measure-chip-row">' + comparisons.slice(0,4).map(function(c){
+        var arrow = c.delta > 0 ? '↑' : (c.delta < 0 ? '↓' : '');
+        return '<div class="measure-chip">' +
+          '<div class="measure-chip-label">' + c.label + '</div>' +
+          '<div class="measure-chip-val">' + c.latest.valueCm + '<span>cm</span></div>' +
+          (c.count > 1 ? ('<div class="measure-chip-delta' + (c.delta!==0?'':' is-muted') + '">' + arrow + ' ' + Math.abs(c.delta) + ' cm</div>') : '<div class="measure-chip-delta is-muted">ilk kayıt</div>') +
+        '</div>';
+      }).join('') + '</div>';
+    }
+    if (photos.length){
+      var firstPh = photos[0], lastPh = photos[photos.length-1];
+      html += '<div class="measure-photo-row">' +
+        photoThumb(firstPh, 'İlk') +
+        (photos.length > 1 ? photoThumb(lastPh, 'Son') : '') +
+      '</div>';
+    }
+    html += '</div>';
+    return html;
   }
 
   /* ---------- takvim ---------- */
@@ -2316,6 +2492,86 @@
     return html;
   }
 
+  function renderMeasureModal(){
+    var comparisons = allMeasurementComparisons();
+    var measureHistory = sortedMeasurements().slice().reverse();
+    var photos = sortedPhotos();
+    var photosDesc = photos.slice().reverse();
+
+    var html = '<div class="modal-overlay" data-action="close-measure-modal"><div class="modal" data-action="modal-noop">' +
+      '<div class="modal-head"><div><div class="modal-title">Vücut Ölçüleri</div><div class="modal-sub">Ölçü ve fotoğrafla ilerlemeni takip et</div></div>' +
+      '<button class="icon-btn" data-action="close-measure-modal">' + icon('close') + '</button></div>';
+
+    html += '<div class="section-title">Yeni Ölçüm</div><div class="form">' +
+      '<div class="measure-site-chip-row">' + MEASURE_SITES.map(function(site){
+        return '<button type="button" class="quick-add-chip" data-action="pick-measure-site" data-site="' + site + '">' + site + '</button>';
+      }).join('') + '</div>' +
+      '<div class="field"><label>Bölge</label><input id="ms-site" type="text" placeholder="Örn. Biceps, Bel, Göğüs..."></div>' +
+      '<div class="field-row cols-2">' +
+        '<div class="field"><label>Tarih</label><input id="ms-date" type="date" value="' + todayKey() + '"></div>' +
+        '<div class="field"><label>Değer (cm)</label><input id="ms-val" type="number" inputmode="decimal" step="0.1" placeholder="0"></div>' +
+      '</div>' +
+      '<button type="button" class="btn btn-primary btn-block" data-action="save-measure-entry">' + icon('plus') + ' Ölçüm Kaydet</button>' +
+    '</div>';
+
+    html += '<div class="section-title">Yeni Fotoğraf</div><div class="form">' +
+      '<div class="field-row cols-2">' +
+        '<div class="field"><label>Tarih</label><input id="mf-date" type="date" value="' + todayKey() + '"></div>' +
+        '<div class="field"><label>Not (opsiyonel)</label><input id="mf-note" type="text" placeholder="örn. antrenman öncesi"></div>' +
+      '</div>' +
+      '<div class="field"><label>Fotoğraf</label><input id="mf-file" type="file" accept="image/*"></div>' +
+      '<div class="hint" id="mf-hint"></div>' +
+      '<button type="button" class="btn btn-primary btn-block" data-action="save-measure-photo">' + icon('camera') + ' Fotoğraf Kaydet</button>' +
+    '</div>';
+
+    if (comparisons.length){
+      html += '<div class="section-title">Karşılaştırma (İlk → Son Kayıt)</div><div class="list" style="padding:2px 14px">' +
+        comparisons.map(function(c){
+          var arrow = c.delta > 0 ? '↑' : (c.delta < 0 ? '↓' : '—');
+          var color = c.delta === 0 ? '--text-faint' : (c.delta > 0 ? '--good' : '--cal');
+          return '<div class="measure-compare-row">' +
+            '<div class="measure-compare-label">' + c.label + '</div>' +
+            '<div class="measure-compare-vals">' + c.first.valueCm + ' cm<span>→</span>' + c.latest.valueCm + ' cm</div>' +
+            '<div class="measure-compare-delta" style="color:var(' + color + ')">' + arrow + ' ' + Math.abs(c.delta) + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
+    if (photos.length >= 2){
+      var fp = photos[0], lp = photos[photos.length-1];
+      var days = Math.round((parseKey(lp.date).getTime() - parseKey(fp.date).getTime()) / 86400000);
+      html += '<div class="section-title">Fotoğraf Karşılaştırma</div>' +
+        '<div class="measure-photo-compare">' + photoThumb(fp, 'İlk') + photoThumb(lp, 'Son') + '</div>' +
+        '<div class="measure-photo-days">' + (days>0 ? (days + ' gün aradan sonra') : 'aynı gün') + '</div>';
+    }
+
+    html += '<div class="section-title">Ölçüm Geçmişi</div>';
+    if (!measureHistory.length){
+      html += '<div class="empty-state">Henüz ölçüm kaydı yok.</div>';
+    } else {
+      html += '<div class="list" style="padding:2px 14px">' + measureHistory.map(function(m){
+        return '<div class="entry-row"><div class="entry-main"><div class="entry-name">' + measureSiteLabel(m.site) + ' — ' + m.valueCm + ' cm</div><div class="entry-sub">' + m.date + '</div></div>' +
+          '<button class="del-btn" data-action="delete-measure-entry" data-id="' + m.id + '">' + icon('trash') + '</button></div>';
+      }).join('') + '</div>';
+    }
+
+    html += '<div class="section-title">Fotoğraf Geçmişi</div>';
+    if (!photosDesc.length){
+      html += '<div class="empty-state">Henüz fotoğraf yok.</div>';
+    } else {
+      html += '<div class="measure-photo-grid">' + photosDesc.map(function(p){
+        return '<div class="measure-photo-thumb"><img src="' + p.dataUrl + '" alt="">' +
+          '<span class="measure-photo-tag">' + p.date + (p.note ? (' · ' + esc(p.note)) : '') + '</span>' +
+          '<button class="del-btn" data-action="delete-measure-photo" data-id="' + p.id + '">' + icon('trash') + '</button>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+
+    html += '</div></div>';
+    return html;
+  }
+
   function renderTabbar(){
     return '<div class="tabbar">' +
       '<button class="tab-btn' + (ui.tab==='home'?' is-active':'') + '" data-action="set-tab" data-tab="home">' + icon('home') + '<span>Ana Sayfa</span></button>' +
@@ -2633,6 +2889,50 @@
     if (action === 'delete-weight-entry'){
       var dwid = btn.getAttribute('data-id');
       state.weightLog = state.weightLog.filter(function(w){ return w.id !== dwid; });
+      scheduleSave(); renderAll(); return;
+    }
+
+    if (action === 'open-measure-modal'){ ui.measureModalOpen = true; renderAll(); return; }
+    if (action === 'close-measure-modal'){ ui.measureModalOpen = false; renderAll(); return; }
+    if (action === 'pick-measure-site'){
+      var msSiteEl = document.getElementById('ms-site');
+      if (msSiteEl) msSiteEl.value = btn.getAttribute('data-site');
+      return;
+    }
+    if (action === 'save-measure-entry'){
+      var msDateEl = document.getElementById('ms-date');
+      var msDate = msDateEl.value;
+      var msSite = document.getElementById('ms-site').value.trim();
+      var msVal = num(document.getElementById('ms-val').value, NaN);
+      if (!msDate || !msSite || !isFinite(msVal) || msVal <= 0){ return; }
+      state.measurements.push({ id:newId(), date:msDate, site:msSite, valueCm:msVal });
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'delete-measure-entry'){
+      var dmid = btn.getAttribute('data-id');
+      state.measurements = state.measurements.filter(function(m){ return m.id !== dmid; });
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'save-measure-photo'){
+      var mfHintEl = document.getElementById('mf-hint');
+      var mfFileEl = document.getElementById('mf-file');
+      var mfFile = mfFileEl && mfFileEl.files && mfFileEl.files[0];
+      if (!mfFile){ if (mfHintEl) mfHintEl.textContent = 'Önce bir fotoğraf seç.'; return; }
+      var mfDate = document.getElementById('mf-date').value || todayKey();
+      var mfNote = document.getElementById('mf-note').value.trim();
+      if (mfHintEl) mfHintEl.textContent = 'İşleniyor...';
+      resizeImageFileToDataUrl(mfFile, 800, 0.55).then(function(dataUrl){
+        state.photos.push({ id:newId(), date:mfDate, dataUrl:dataUrl, note:mfNote });
+        scheduleSave(); renderAll();
+      }).catch(function(){
+        var el2 = document.getElementById('mf-hint');
+        if (el2) el2.textContent = 'Fotoğraf işlenemedi, tekrar dene.';
+      });
+      return;
+    }
+    if (action === 'delete-measure-photo'){
+      var dpid = btn.getAttribute('data-id');
+      state.photos = state.photos.filter(function(p){ return p.id !== dpid; });
       scheduleSave(); renderAll(); return;
     }
 

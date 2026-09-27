@@ -1,9 +1,9 @@
-// Yapay zeka asistanı için Anthropic (Claude) API anahtarın.
-// console.anthropic.com > Get API Keys üzerinden alınır.
-//
-// ÖNEMLİ: Bu anahtar sitenin herkese açık kaynak kodunda görünür (bu basit,
-// tek kullanıcılı uygulamada arka uç/sunucu yok). Bu yüzden:
-//  - Bu linki başkasıyla paylaşma / herkese açık bir yere koyma,
-//  - Anthropic Console'dan bu anahtara aylık bir harcama limiti koy,
-//  - Şüphelenirsen anahtarı Console'dan iptal edip yenisini oluştur.
-window.anthropicApiKey = "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";
+// Bu dosya BİLEREK boş bırakılıyor. Gerçek Anthropic API anahtarı buraya
+// commit edilmiyor (edilirse GitHub bunu herkese açık repoda tespit edip
+// Anthropic'e bildiriyor ve anahtar otomatik iptal ediliyor — bu bir kere
+// başımıza geldi). Bunun yerine anahtar bir GitHub Actions "repository
+// secret" olarak saklanıyor ve her deploy'da .github/workflows/deploy.yml
+// tarafından bu dosyanın içine otomatik yazılıyor. Yerelde (bilgisayarında
+// index.html'i doğrudan açarsan) bu dosya boş kalır, asistan "henüz
+// kurulmamış" der — bu normaldir.
+window.anthropicApiKey = "";
