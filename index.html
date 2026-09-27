@@ -539,6 +539,48 @@
     return Math.round(num(steps) * w * 0.0005);
   }
 
+  /* ---------- Sağlık uygulaması içe aktarma (iOS Kısayollar / Android otomasyon linki) ----------
+     Örnek: index.html?adim=8412&kardiyoTip=kosu&kardiyoDk=32&kardiyoKm=5.1&kardiyoKcal=310&kardiyoId=2026-09-27T07:15
+     "adim" ve "kardiyoTip+kardiyoDk" birbirinden bağımsız, ikisi de opsiyonel. */
+  var healthImportApplied = false;
+  var HEALTH_CARDIO_TYPE_MAP = { yurus:'yurus', walking:'yurus', kosu:'kosu', running:'kosu', bisiklet:'bisiklet', cycling:'bisiklet', yuzme:'yuzme', swimming:'yuzme', ip:'ip', jumprope:'ip', diger:'diger', other:'diger' };
+  function mapHealthCardioType(raw){
+    var k = (raw||'').toLowerCase();
+    return HEALTH_CARDIO_TYPE_MAP[k] || 'diger';
+  }
+  function applyHealthImportFromUrl(){
+    var params;
+    try { params = new URLSearchParams(location.search); } catch(e){ return; }
+    var stepsParam = params.get('adim');
+    var cTip = params.get('kardiyoTip'), cDk = params.get('kardiyoDk'), cKm = params.get('kardiyoKm'), cKcal = params.get('kardiyoKcal'), cId = params.get('kardiyoId');
+    if (!stepsParam && !(cTip && cDk)) return false;
+    var key = todayKey();
+    var d = dayOf(key);
+    var changed = false;
+    if (stepsParam !== null && stepsParam !== ''){
+      var stepsNum = num(stepsParam, null);
+      if (stepsNum !== null && isFinite(stepsNum) && stepsNum >= 0){ d.steps = Math.round(stepsNum); changed = true; }
+    }
+    if (cTip && cDk){
+      var durationMin = num(cDk, 0);
+      var alreadyImported = cId && d.cardio.some(function(c){ return c.importId === cId; });
+      if (durationMin > 0 && !alreadyImported){
+        var typeKey = mapHealthCardioType(cTip);
+        var distanceKm = (cKm !== null && cKm !== '') ? num(cKm, null) : null;
+        var calories = (cKcal !== null && cKcal !== '' && num(cKcal,0) > 0) ? Math.round(num(cKcal)) : cardioCalories(typeKey, durationMin, distanceKm);
+        d.cardio.push({ id:newId(), type:typeKey, durationMin:durationMin, distanceKm:distanceKm, calories:calories, importId: cId || null });
+        changed = true;
+      }
+    }
+    if (changed){
+      scheduleSave();
+      ui.tab = 'cardio'; ui.period = 'day'; ui.dayDetailKind = 'cardio'; ui.dayDetailKey = key;
+      saveUiState();
+    }
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch(e2){}
+    return changed;
+  }
+
   /* ---------- hareket -> bölge eşleşmesi ---------- */
   var EXERCISE_REGIONS_RAW = {
     'Chest Press Machine': 'Göğüs',
@@ -735,15 +777,16 @@
     return out;
   }
   function loadInitialState(){
-    var embedded = null;
-    try {
-      var el = document.getElementById('app-state-json');
-      if (el && el.textContent.trim()) embedded = JSON.parse(el.textContent);
-    } catch(e){}
-    if (embedded && Object.keys(embedded).length) return normalizeState(embedded);
     try {
       var local = localStorage.getItem(LOCAL_KEY);
       if (local) return normalizeState(JSON.parse(local));
+    } catch(e){}
+    try {
+      var el = document.getElementById('app-state-json');
+      if (el && el.textContent.trim()){
+        var embedded = JSON.parse(el.textContent);
+        if (embedded && Object.keys(embedded).length) return normalizeState(embedded);
+      }
     } catch(e){}
     return defaultState();
   }
@@ -2049,12 +2092,11 @@
     if (scope === 'day'){
       var s0 = dayWorkoutSummary(days[0]);
       var ti0 = typeInfo(s0.type);
-      return '<div class="hero-card" data-action="open-today-detail" data-tab="workout" style="cursor:pointer">' + heroWatermark('dumbbell') +
+      return '<div class="hero-card">' + heroWatermark('dumbbell') +
         '<div class="hero-top"><div><div class="hero-label">' + label + '</div>' +
         '<div class="hero-big" style="font-size:22px">' + ti0.label + '</div></div>' +
         '<div class="hero-pill">' + (s0.type==='rest' ? 'Dinlenme' : (s0.done ? 'Tamamlandı ✓' : 'Bekliyor')) + '</div></div>' +
         (s0.type!=='rest' ? ('<div class="hero-foot"><span>' + s0.setCount + ' set</span><span>' + s0.volume.toLocaleString('tr-TR') + ' kg hacim</span></div>') : '') +
-        '<div class="hero-tap-hint">Girmek için dokun ' + icon('chevronR') + '</div>' +
       '</div>';
     }
 
@@ -2103,6 +2145,7 @@
     var y = ui.cursor.getFullYear(), m = ui.cursor.getMonth();
     var weeks = getMonthWeeks(y, m);
     var html = renderWorkoutSummary('day');
+    html += renderDayDetailWorkout(todayKey(), new Date());
     html += '<div class="section-title">Gün Gün</div><div class="list">';
     weeks.forEach(function(wk){
       wk.days.forEach(function(d){ html += dayRowHtml(d, keyForDate(d), 'workout', null); });
@@ -2671,6 +2714,7 @@
       if (!snap.exists){
         if (!firstSnapshotDone){
           firstSnapshotDone = true;
+          if (!healthImportApplied){ healthImportApplied = true; applyHealthImportFromUrl(); }
           writeStateToFirestore(state);
         }
         return;
@@ -2678,6 +2722,7 @@
       firstSnapshotDone = true;
       if (snap.metadata.hasPendingWrites) return;
       state = normalizeState(snap.data());
+      if (!healthImportApplied){ healthImportApplied = true; applyHealthImportFromUrl(); }
       try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch(e){}
       saveMode = 'saved';
       renderAll();
@@ -3038,6 +3083,12 @@
   /* ---------- başlat ---------- */
   renderAll();
   initFirebase();
+  setTimeout(function(){
+    if (!healthImportApplied){
+      healthImportApplied = true;
+      if (applyHealthImportFromUrl()) renderAll();
+    }
+  }, 2500);
 })();
 </script>
 <script>

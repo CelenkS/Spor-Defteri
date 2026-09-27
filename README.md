@@ -80,6 +80,59 @@ kayıtlar başarısız olur ve uygulama sessizce "Bu cihazda" (yalnızca yerel)
 moduna düşer. Böyle bir şey fark edersen (üstte sürekli "Bu cihazda" yazması)
 Vücut Ölçüleri > Fotoğraf Geçmişi'nden birkaç eski fotoğrafı silmen yeterli.
 
+## Apple Sağlık'tan otomatik adım/kardiyo çekme (iPhone Kısayollar)
+
+Apple, Sağlık verilerini hiçbir zaman bir web sitesine açmıyor (HealthKit sadece
+gerçek bir iPhone uygulamasından erişilebilir); Huawei Health'in gerçek bir API'si
+var ama Huawei Developer hesabı açıp onay almayı gerektiriyor — kişisel, tek
+kullanıcılı bir site için pratik değil. Bunun yerine uygulama, adresine özel bir
+sorgu parametresiyle açılınca sessizce **bugünün** adım sayısını/kardiyosunu
+kaydeden bir "içe aktarma" kapısı içeriyor:
+
+```
+https://celenks.github.io/Spor-Defteri/?adim=8412
+https://celenks.github.io/Spor-Defteri/?kardiyoTip=kosu&kardiyoDk=32&kardiyoKm=5.1&kardiyoKcal=310&kardiyoId=2026-09-27-sabah
+```
+
+- `adim`: bugünün toplam adım sayısı (sayı).
+- `kardiyoTip`: `yurus`, `kosu`, `bisiklet`, `yuzme`, `ip` veya `diger`.
+- `kardiyoDk`: kardiyo süresi (dakika).
+- `kardiyoKm`, `kardiyoKcal`: opsiyonel, mesafe (km) ve kalori — verilmezse
+  uygulama kaloriyi kendi formülüyle hesaplar.
+- `kardiyoId`: aynı antrenmanı iki kez eklememek için benzersiz bir metin (ör.
+  antrenmanın başlangıç saati) — aynı `kardiyoId` ile tekrar açarsan kardiyo
+  kaydı tekrar eklenmez, sadece adım güncellenir.
+
+Sayfa açılır açılmaz bu değerleri kaydedip adres çubuğundaki parametreleri
+temizliyor ve seni doğrudan bugünün Kardiyo ekranına götürüyor — hiçbir yeni
+hesap veya izin gerekmiyor, çünkü bu link telefonunda zaten oturum açmış olan
+tarayıcıyı (Safari) kullanıyor; başka biri bu linki kendi telefonunda açsa bile
+senin verine dokunamaz, kendi (boş) kaydına yazar.
+
+**iPhone'da tek dokunuşluk Kısayol kurmak için:**
+
+1. Kısayollar uygulamasını aç → sağ üstten "+" ile yeni bir Kısayol oluştur, adını
+   "Spor Defteri Sağlık" gibi bir şey koy.
+2. Arama kutusuna "Sağlık" (Health) yaz, adım sayısını (Adımlar/Steps) bugün için
+   getiren bir eylem ekle (ör. "Sağlık Örneklerini Bul" / "Find Health Samples" →
+   Tür: Adımlar, Başlangıç: Bugün — birden fazla örnek gelirse aralarına bir
+   "İstatistik Hesapla" / "Calculate Statistics" → Toplam adımı ekle).
+3. "Metin" (Text) eylemiyle şu adresi oluştur (adım sayısı değişkenini sona ekle):
+   `https://celenks.github.io/Spor-Defteri/?adim=` + [adım sayısı]
+4. "URL'leri Aç" (Open URLs) eylemiyle bu metni aç.
+5. (İstersen kardiyo için) "Sağlık Örneklerini Bul" yerine "Antrenmanları Bul" /
+   "Find Workouts" → Başlangıç: Bugün ekleyip Süre/Mesafe/Toplam Enerji alanlarını
+   al, tür alanına göre birkaç "Eğer" (If) bloğuyla `kardiyoTip`i belirle (Koşu→kosu,
+   Yürüyüş→yurus, Bisiklet→bisiklet, Yüzme→yuzme, diğerleri→diger), sonra 3. adımdaki
+   metne `&kardiyoTip=...&kardiyoDk=...&kardiyoKm=...&kardiyoKcal=...&kardiyoId=...`
+   ekle (kardiyoId için antrenmanın başlangıç tarihini/saatini kullanabilirsin).
+6. Kısayolu Ana Ekran'a ekle (Kısayolun paylaş/ayarlar menüsünden "Ana Ekrana Ekle")
+   veya Otomasyonlar'dan "her gün saat X'te" otomatik çalışacak şekilde ayarla.
+
+Tam menü/eylem adları iOS sürümüne göre küçük farklılıklar gösterebilir; takılırsan
+ekran görüntüsü at, birlikte ilerleriz. Huawei Health için bu yöntemin bir eşdeğeri
+yok — o taraf şimdilik elle giriş ile devam ediyor.
+
 ## Yerel geliştirme
 
 `index.html` tek başına açılabilir; `firebase-config.js` boşsa uygulama
