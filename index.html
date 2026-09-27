@@ -1280,6 +1280,27 @@
     var sets = hist[0].sets;
     return sets[sets.length - 1];
   }
+  function bestSetOf(sets){
+    return (sets||[]).reduce(function(best, s){
+      var w = num(s.weight);
+      return (!best || w > best.weight) ? { weight:w, reps:s.reps } : best;
+    }, null);
+  }
+  function previousSessionBest(name, excludeKey){
+    var hist = exerciseHistory(name, excludeKey);
+    if (!hist.length) return null;
+    var best = bestSetOf(hist[0].sets);
+    if (!best) return null;
+    return { weight:best.weight, reps:best.reps, dateObj:hist[0].dateObj };
+  }
+  function weightDeltaBadge(currentWeight, previousWeight){
+    if (previousWeight === null || previousWeight === undefined || !isFinite(previousWeight)) return '';
+    var delta = round10(currentWeight - previousWeight);
+    var color = delta > 0 ? '--good' : (delta < 0 ? '--bad' : '--text-faint');
+    var arrow = delta > 0 ? '▲' : (delta < 0 ? '▼' : '=');
+    var txt = delta === 0 ? 'aynı' : (delta > 0 ? '+' : '') + delta + ' kg';
+    return '<span style="color:var(' + color + ');font-weight:700;font-size:11px;margin-left:6px">' + arrow + ' ' + txt + '</span>';
+  }
   function exerciseNamesForDays(dateArr){
     var seen = {}, out = [];
     dateArr.forEach(function(d){
@@ -1305,13 +1326,24 @@
     if (!hist.length){
       html += '<div class="empty-state">Bu hareket için henüz set kaydı yok.</div>';
     } else {
-      html += '<div class="list">' + hist.map(function(h){
+      if (hist.length > 1){
+        var firstBest = hist[hist.length-1].sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0);
+        var latestBest = hist[0].sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0);
+        html += '<div class="measure-compare-row" style="padding:0 0 12px">' +
+          '<div class="measure-compare-label">İlk kayda göre</div>' +
+          '<div class="measure-compare-vals">' + firstBest + ' kg<span>→</span>' + latestBest + ' kg</div>' +
+          weightDeltaBadge(latestBest, firstBest) +
+        '</div>';
+      }
+      html += '<div class="list">' + hist.map(function(h, idx){
         var wd = WEEKDAYS_SHORT[h.dateObj.getDay()];
         var best = h.sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0);
+        var older = hist[idx+1];
+        var delta = older ? weightDeltaBadge(best, older.sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0)) : '';
         return '<div class="week-total-row">' +
           '<div><div class="week-total-label">' + wd + '</div><div class="week-total-date">' + h.dateObj.getDate() + ' ' + MONTHS[h.dateObj.getMonth()] + '</div></div>' +
           '<div class="week-total-mid">' + h.sets.map(function(s){ return '<span class="mchip cal" style="margin:0 4px 4px 0">' + s.reps + '×' + s.weight + 'kg</span>'; }).join('') + '</div>' +
-          '<div class="week-total-right"><div class="week-total-val">' + best + ' kg</div><div class="week-total-sub is-good">en iyi set</div></div>' +
+          '<div class="week-total-right"><div class="week-total-val">' + best + ' kg' + delta + '</div><div class="week-total-sub is-good">en iyi set</div></div>' +
         '</div>';
       }).join('') + '</div>';
     }
@@ -2307,9 +2339,13 @@
         var prefillReps = lastSet ? lastSet.reps : (histPerf ? histPerf.reps : (planEntry && planEntry.repMin ? planEntry.repMin : ''));
         var prefillWeight = lastSet ? lastSet.weight : (histPerf ? histPerf.weight : (planEntry && planEntry.targetWeight ? planEntry.targetWeight : ''));
         var histNote = (!lastSet && histPerf) ? '<div class="hint" style="margin-top:2px">Son sefer: ' + histPerf.reps + '×' + histPerf.weight + 'kg</div>' : '';
+        var prevBest = previousSessionBest(ex.name, key);
+        var analysisNote = (prevBest && maxToday > 0)
+          ? ('<div class="hint" style="margin-top:2px">Önceki en iyi: ' + prevBest.weight + ' kg' + weightDeltaBadge(maxToday, prevBest.weight) + '</div>')
+          : '';
         var exRegion = regionForExercise(ex.name);
         var regionNote = exRegion ? '<span class="region-tag">' + esc(exRegion) + '</span>' : '';
-        return '<div class="ex-card"><div class="ex-card-head"><div><button type="button" class="ex-card-name" data-action="open-exercise-history" data-name="' + esc(ex.name) + '" style="background:none;border:none;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer;color:inherit;font:inherit">' + esc(ex.name) + '</button> ' + regionNote + (targetNote ? '<div class="hint" style="margin-top:2px">' + targetNote + '</div>' : '') + histNote + '</div>' +
+        return '<div class="ex-card"><div class="ex-card-head"><div><button type="button" class="ex-card-name" data-action="open-exercise-history" data-name="' + esc(ex.name) + '" style="background:none;border:none;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer;color:inherit;font:inherit">' + esc(ex.name) + '</button> ' + regionNote + (targetNote ? '<div class="hint" style="margin-top:2px">' + targetNote + '</div>' : '') + histNote + analysisNote + '</div>' +
           '<button class="del-btn" data-action="delete-exercise" data-key="' + key + '" data-exid="' + ex.id + '">' + icon('trash') + '</button></div>' +
           (ex.sets.length ? ('<div class="set-head-row"><span></span><span>Tekrar</span><span>Kilo (kg)</span><span></span></div>' +
             ex.sets.map(function(s, i){
