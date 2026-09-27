@@ -1,5 +1,8 @@
 // Spor Defteri - service worker (basit çevrimdışı önbellek)
-var CACHE_NAME = 'spor-defteri-v1';
+// v2: aynı origin dosyalar için "önce ağ, olmazsa önbellek" (network-first) —
+// böylece her deploy sonrası site her zaman en güncel halini gösterir,
+// sadece internet yokken önbellekteki son bilinen haline düşer.
+var CACHE_NAME = 'spor-defteri-v2';
 var APP_SHELL = [
   './',
   './index.html',
@@ -27,23 +30,21 @@ self.addEventListener('activate', function(event){
 
 self.addEventListener('fetch', function(event){
   var req = event.request;
-  if (req.method !== 'GET') return; // Firestore/Auth çağrıları vs. dokunma
+  if (req.method !== 'GET') return; // Firestore/Auth/AI çağrılarına dokunma
 
-  // Uygulama kabuğu (aynı origin, navigasyon/HTML/CSS gibi) -> cache-first, arka planda güncelle
   var url = new URL(req.url);
   var sameOrigin = url.origin === self.location.origin;
+  if (!sameOrigin) return; // başka origin'ler (fontlar, Firebase, Anthropic) doğrudan ağdan
 
   event.respondWith(
-    caches.match(req).then(function(cached){
-      var networkFetch = fetch(req).then(function(res){
-        if (sameOrigin && res && res.ok){
-          var copy = res.clone();
-          caches.open(CACHE_NAME).then(function(cache){ cache.put(req, copy); });
-        }
-        return res;
-      }).catch(function(){ return cached; });
-      // varsa önce önbellekten dön (hızlı açılış), arka planda ağdan tazele
-      return cached || networkFetch;
+    fetch(req).then(function(res){
+      if (res && res.ok){
+        var copy = res.clone();
+        caches.open(CACHE_NAME).then(function(cache){ cache.put(req, copy); });
+      }
+      return res;
+    }).catch(function(){
+      return caches.match(req);
     })
   );
 });
