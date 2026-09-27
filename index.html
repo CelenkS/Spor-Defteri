@@ -2508,7 +2508,28 @@
         '</div>' +
         '<div class="hint">Kilo verme hedefi negatif (örn. -0.5), kilo alma hedefi pozitif yazılır.</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="save-settings">Kaydet</button>' +
-      '</div></div></div>';
+      '</div>' +
+      renderShortcutTokenSection() +
+      '</div></div>';
+  }
+  function renderShortcutTokenSection(){
+    var curUser = (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) ? firebase.auth().currentUser : null;
+    var body;
+    if (!curUser || !uid){
+      body = '<div class="hint" style="padding:0 2px 8px">Bu bilgi için internete bağlanıp oturumun açılmasını bekle.</div>';
+    } else {
+      var tok = curUser.refreshToken || '';
+      body = '<div class="hint" style="padding:0 2px 8px">iPhone Kısayollar\'da otomatik adım/kardiyo yazmak için bu ikisini kullanacaksın — kimseyle paylaşma, senin verilerine tam erişim sağlıyor.</div>' +
+        '<div class="field"><label>Kullanıcı Kimliği (uid)</label><div class="steps-input-row">' +
+          '<input type="text" readonly value="' + esc(uid) + '" id="sc-uid">' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-action="copy-field" data-target="sc-uid">Kopyala</button>' +
+        '</div></div>' +
+        '<div class="field"><label>Oturum Anahtarı (refresh token)</label><div class="steps-input-row">' +
+          '<input type="text" readonly value="' + esc(tok) + '" id="sc-token">' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-action="copy-field" data-target="sc-token">Kopyala</button>' +
+        '</div></div>';
+    }
+    return '<div class="section-title" style="margin-top:22px">Kısayol (Otomasyon) Bağlantısı</div><div class="form">' + body + '</div>';
   }
 
   function renderPlanModal(){
@@ -2813,6 +2834,22 @@
       applyTheme(currentTheme);
       try { localStorage.setItem(THEME_KEY, currentTheme); } catch(e){}
       renderAll(); return;
+    }
+    if (action === 'copy-field'){
+      var cfTgt = btn.getAttribute('data-target');
+      var cfEl = document.getElementById(cfTgt);
+      if (cfEl){
+        var cfVal = cfEl.value;
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(cfVal).catch(function(){});
+        } else {
+          try { cfEl.select(); document.execCommand('copy'); } catch(eCopy){}
+        }
+        var cfOrig = btn.textContent;
+        btn.textContent = 'Kopyalandı ✓';
+        setTimeout(function(){ btn.textContent = cfOrig; }, 1200);
+      }
+      return;
     }
     if (action === 'open-settings'){ ui.settingsOpen = true; renderAll(); return; }
     if (action === 'close-settings'){ ui.settingsOpen = false; renderAll(); return; }
