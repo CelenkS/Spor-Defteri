@@ -2513,7 +2513,10 @@
       '</div></div>';
   }
   function renderShortcutTokenSection(){
-    var curUser = (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) ? firebase.auth().currentUser : null;
+    var curUser = null;
+    try {
+      if (typeof firebase !== 'undefined' && firebase.auth) curUser = firebase.auth().currentUser;
+    } catch(eTok){ curUser = null; }
     var body;
     if (!curUser || !uid){
       body = '<div class="hint" style="padding:0 2px 8px">Bu bilgi için internete bağlanıp oturumun açılmasını bekle.</div>';
