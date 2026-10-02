@@ -22,7 +22,9 @@ uygulama açılışta görünmez (anonim) bir Firebase oturumu açar.
    ```
 
 2. Firestore'u etkinleştir (production mode) ve Authentication > Sign-in method
-   altından **Anonymous**'u aç.
+   altından **Anonymous**'u aç. Cihazlar arası senkron özelliğinin çalışması için
+   aynı yerden **Email/Password**'ü de aç (aşağıdaki "Cihazlar arası senkron"
+   bölümüne bak).
 
 3. Firestore > Rules sekmesine bu projedeki `firestore.rules` dosyasının
    içeriğini yapıştır ve yayınla.
@@ -79,6 +81,26 @@ fazla ~1 MB olabiliyor; çok sayıda fotoğraf biriktirirse bir noktadan sonra
 kayıtlar başarısız olur ve uygulama sessizce "Bu cihazda" (yalnızca yerel)
 moduna düşer. Böyle bir şey fark edersen (üstte sürekli "Bu cihazda" yazması)
 Vücut Ölçüleri > Fotoğraf Geçmişi'nden birkaç eski fotoğrafı silmen yeterli.
+
+## Cihazlar arası senkron (telefon + bilgisayar aynı veriyi görsün)
+
+Uygulama açılışta görünmez (anonim) bir Firebase oturumu açar ve bu oturum
+**cihaza/tarayıcıya özeldir** — yani telefonda ve bilgisayarda açılan iki anonim
+oturum, varsayılan olarak birbirinden habersiz iki ayrı (ve boş) Firestore
+belgesi kullanır. Aynı verilere birden fazla cihazdan ulaşmak için anonim
+oturumu kalıcı bir e-posta/şifre hesabına bağlamak gerekir:
+
+1. Firebase Console > Authentication > Sign-in method'dan **Email/Password**'ü
+   aç (bir kere, kurulum adımı 2'de de belirtildi).
+2. Verilerin olduğu cihazda (genelde telefon) Ayarlar > **Cihazlar Arası
+   Senkron** bölümünü aç, bir e-posta ve şifre gir, "Hesabı Oluştur ve Bağla"ya
+   bas. Bu işlem mevcut verileri taşımaz/silmez — sadece aynı veriye artık bir
+   e-posta/şifre ile de erişilebilir hale gelir.
+3. Diğer cihazda (örneğin bilgisayar) aynı Ayarlar bölümünden, aynı e-posta ve
+   şifre ile "Giriş Yap"a bas. O cihaz artık aynı hesaba/verilere bağlanır.
+
+Her cihazda bu işlemi bir kere yapman yeterli; sonrasında oturum o cihazda
+kalıcı olarak açık kalır ve normal gerçek zamanlı senkron devam eder.
 
 ## Apple Sağlık'tan otomatik adım/kardiyo çekme (iPhone Kısayollar)
 

@@ -798,6 +798,9 @@
   var firstSnapshotDone = false;
   var saveTimer = null;
   var saveMode = 'saved';
+  var accountSyncMsg = null; /* {type:'error'|'success', text:string} */
+  var accountSyncBusy = false;
+  var unsubscribeSnapshot = null;
 
   function dayOf(key){
     if (!state.days[key]) state.days[key] = emptyDay();
@@ -2509,8 +2512,57 @@
         '<div class="hint">Kilo verme hedefi negatif (örn. -0.5), kilo alma hedefi pozitif yazılır.</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="save-settings">Kaydet</button>' +
       '</div>' +
+      renderAccountSyncSection() +
       renderShortcutTokenSection() +
       '</div></div>';
+  }
+  function authErrorMessage(err){
+    var code = (err && err.code) || '';
+    var map = {
+      'auth/email-already-in-use': 'Bu e-posta zaten başka bir hesapta kayıtlı. Onun yerine aşağıdan "Giriş Yap"ı kullan.',
+      'auth/invalid-email': 'E-posta adresi geçersiz görünüyor.',
+      'auth/weak-password': 'Şifre çok zayıf, en az 6 karakter olmalı.',
+      'auth/credential-already-in-use': 'Bu e-posta zaten başka bir hesaba bağlı.',
+      'auth/requires-recent-login': 'Bu işlem için yeniden giriş yapman gerekiyor, sayfayı yenileyip tekrar dene.',
+      'auth/operation-not-allowed': 'E-posta/şifre girişi Firebase projende henüz açılmamış (Authentication > Sign-in method > Email/Password).',
+      'auth/user-not-found': 'Bu e-postayla kayıtlı hesap bulunamadı.',
+      'auth/wrong-password': 'Şifre yanlış.',
+      'auth/invalid-credential': 'E-posta veya şifre yanlış.',
+      'auth/too-many-requests': 'Çok fazla deneme oldu, biraz bekleyip tekrar dene.',
+      'auth/network-request-failed': 'İnternet bağlantısı sorunu, tekrar dene.'
+    };
+    return map[code] || ('Bir hata oldu: ' + (err && err.message ? err.message : code));
+  }
+  function renderAccountSyncSection(){
+    var curUser = null;
+    try { if (typeof firebase !== 'undefined' && firebase.auth) curUser = firebase.auth().currentUser; } catch(eU){ curUser = null; }
+    var msgHtml = accountSyncMsg ? ('<div class="hint" style="padding:0 2px 8px;color:var(' + (accountSyncMsg.type==='error'?'--bad':'--good') + ')">' + esc(accountSyncMsg.text) + '</div>') : '';
+    if (!curUser){
+      return '<div class="section-title" style="margin-top:22px">Cihazlar Arası Senkron</div><div class="form">' +
+        msgHtml + '<div class="hint" style="padding:0 2px 8px">İnternete bağlanıp oturumun açılmasını bekle.</div></div>';
+    }
+    var isPermanent = !curUser.isAnonymous;
+    var statusLine = isPermanent
+      ? ('<div class="hint" style="padding:0 2px 8px">Bu hesap kalıcı: <b>' + esc(curUser.email || '') + '</b>. Diğer cihazlarda aynı e-posta/şifre ile giriş yaparsan aynı verilere ulaşırsın.</div>')
+      : ('<div class="hint" style="padding:0 2px 8px">Bu cihazdaki veriler şu an sadece bu cihaza/tarayıcıya bağlı (geçici oturum). Başka bir cihazda (ör. bilgisayar) aynı verileri görmek için aşağıdan bu hesabı bir e-posta/şifreye bağla, sonra diğer cihazda aynı bilgilerle giriş yap.</div>');
+    var busyAttr = accountSyncBusy ? ' disabled' : '';
+    var html = '<div class="section-title" style="margin-top:22px">Cihazlar Arası Senkron</div><div class="form">' + msgHtml + statusLine;
+    if (!isPermanent){
+      html += '<div class="hint" style="font-weight:700;margin:4px 2px 2px">Bu cihazı kalıcı hesaba bağla (ilk kurulum — telefonunda yap)</div>' +
+        '<div class="field-row cols-2">' +
+          '<input type="text" inputmode="email" autocapitalize="off" placeholder="E-posta" id="acc-link-email"' + busyAttr + '>' +
+          '<input type="password" placeholder="Şifre (en az 6 karakter)" id="acc-link-pass"' + busyAttr + '>' +
+        '</div>' +
+        '<button type="button" class="btn btn-primary btn-block" data-action="link-account"' + busyAttr + '>' + icon('check') + ' Hesabı Oluştur ve Bağla</button>';
+    }
+    html += '<div class="hint" style="font-weight:700;margin:16px 2px 2px">Var olan hesaba giriş yap (diğer cihazda — ör. bilgisayarda yap)</div>' +
+      '<div class="field-row cols-2">' +
+        '<input type="text" inputmode="email" autocapitalize="off" placeholder="E-posta" id="acc-signin-email"' + busyAttr + '>' +
+        '<input type="password" placeholder="Şifre" id="acc-signin-pass"' + busyAttr + '>' +
+      '</div>' +
+      '<button type="button" class="btn btn-ghost btn-block" data-action="signin-account"' + busyAttr + '>' + icon('check') + ' Giriş Yap</button>' +
+      '</div>';
+    return html;
   }
   function renderShortcutTokenSection(){
     var curUser = null;
@@ -2724,8 +2776,10 @@
 
     firebase.auth().onAuthStateChanged(function(user){
       if (user){
+        if (uid === user.uid && docRef) { renderAll(); return; } /* same user (e.g. just linked), just refresh UI */
         uid = user.uid;
         docRef = db.collection('sporDefteri').doc(uid);
+        firstSnapshotDone = false;
         attachSnapshot();
       }
     });
@@ -2734,7 +2788,8 @@
     });
   }
   function attachSnapshot(){
-    docRef.onSnapshot(function(snap){
+    if (typeof unsubscribeSnapshot === 'function') { try { unsubscribeSnapshot(); } catch(eU0){} }
+    unsubscribeSnapshot = docRef.onSnapshot(function(snap){
       if (!snap.exists){
         if (!firstSnapshotDone){
           firstSnapshotDone = true;
@@ -2947,6 +3002,51 @@
       var rlLast = rlEx.sets[rlEx.sets.length - 1];
       rlEx.sets.push({ reps: rlLast.reps, weight: rlLast.weight });
       scheduleSave(); renderAll(); return;
+    }
+    if (action === 'link-account'){
+      var leEl = document.getElementById('acc-link-email'), lpEl = document.getElementById('acc-link-pass');
+      var lEmail = (leEl && leEl.value || '').trim(), lPass = lpEl && lpEl.value || '';
+      if (!lEmail || !lPass){ accountSyncMsg = { type:'error', text:'E-posta ve şifre gerekli.' }; renderAll(); return; }
+      if (lPass.length < 6){ accountSyncMsg = { type:'error', text:'Şifre en az 6 karakter olmalı.' }; renderAll(); return; }
+      var lAuthUser = null;
+      try { if (typeof firebase !== 'undefined' && firebase.auth) lAuthUser = firebase.auth().currentUser; } catch(eLA){ lAuthUser = null; }
+      if (!lAuthUser){
+        accountSyncMsg = { type:'error', text:'Önce internete bağlanıp oturumun açılmasını bekle.' }; renderAll(); return;
+      }
+      accountSyncBusy = true; accountSyncMsg = null; renderAll();
+      var lCred = firebase.auth.EmailAuthProvider.credential(lEmail, lPass);
+      lAuthUser.linkWithCredential(lCred).then(function(){
+        accountSyncBusy = false;
+        accountSyncMsg = { type:'success', text:'Hesap bağlandı. Diğer cihazda aynı e-posta/şifre ile "Giriş Yap"ı kullan.' };
+        renderAll();
+      }).catch(function(errLink){
+        accountSyncBusy = false;
+        accountSyncMsg = { type:'error', text:authErrorMessage(errLink) };
+        renderAll();
+      });
+      return;
+    }
+    if (action === 'signin-account'){
+      var seEl = document.getElementById('acc-signin-email'), spEl = document.getElementById('acc-signin-pass');
+      var sEmail = (seEl && seEl.value || '').trim(), sPass = spEl && spEl.value || '';
+      if (!sEmail || !sPass){ accountSyncMsg = { type:'error', text:'E-posta ve şifre gerekli.' }; renderAll(); return; }
+      var sAuthOk = false;
+      try { sAuthOk = typeof firebase !== 'undefined' && !!firebase.auth && !!window.firebaseConfig; } catch(eSA){ sAuthOk = false; }
+      if (!sAuthOk){
+        accountSyncMsg = { type:'error', text:'İnternete bağlanman gerekiyor.' }; renderAll(); return;
+      }
+      accountSyncBusy = true; accountSyncMsg = null; renderAll();
+      firebase.auth().signInWithEmailAndPassword(sEmail, sPass).then(function(){
+        accountSyncBusy = false;
+        accountSyncMsg = { type:'success', text:'Giriş yapıldı, veriler yükleniyor…' };
+        firstSnapshotDone = false;
+        renderAll();
+      }).catch(function(errSignin){
+        accountSyncBusy = false;
+        accountSyncMsg = { type:'error', text:authErrorMessage(errSignin) };
+        renderAll();
+      });
+      return;
     }
     if (action === 'save-settings'){
       var s = state.settings;
