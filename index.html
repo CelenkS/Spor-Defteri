@@ -634,7 +634,7 @@
 
   /* ---------- yardımcılar ---------- */
   function pad(n){ return n<10 ? '0'+n : ''+n; }
-  function num(v, d){ var n = parseFloat(v); return isFinite(n) ? n : (d===undefined?0:d); }
+  function num(v, d){ var n = parseFloat(String(v==null?'':v).trim().replace(',', '.')); return isFinite(n) ? n : (d===undefined?0:d); }
   function round(n){ return Math.round(num(n)); }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
@@ -2343,10 +2343,10 @@
       '<div class="form">' +
         '<div class="field"><label>Ne yedin?</label><input id="dd-food-name" type="text" placeholder="Örn. Tavuk göğsü"></div>' +
         '<div class="field-row cols-4">' +
-          '<div class="field"><label>Kcal</label><input id="dd-food-cal" type="number" inputmode="numeric" placeholder="0"></div>' +
-          '<div class="field"><label>Prot.</label><input id="dd-food-p" type="number" inputmode="numeric" placeholder="0"></div>' +
-          '<div class="field"><label>Yağ</label><input id="dd-food-f" type="number" inputmode="numeric" placeholder="0"></div>' +
-          '<div class="field"><label>Karb.</label><input id="dd-food-k" type="number" inputmode="numeric" placeholder="0"></div>' +
+          '<div class="field"><label>Kcal</label><input id="dd-food-cal" type="text" inputmode="numeric" placeholder="0"></div>' +
+          '<div class="field"><label>Prot.</label><input id="dd-food-p" type="text" inputmode="numeric" placeholder="0"></div>' +
+          '<div class="field"><label>Yağ</label><input id="dd-food-f" type="text" inputmode="numeric" placeholder="0"></div>' +
+          '<div class="field"><label>Karb.</label><input id="dd-food-k" type="text" inputmode="numeric" placeholder="0"></div>' +
         '</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="add-nutrition-entry" data-key="' + key + '">' + icon('plus') + ' Ekle</button>' +
       '</div></details>';
@@ -2420,12 +2420,12 @@
             '<div class="stepper-row">' +
               '<div class="stepper-field"><div class="stepper-field-label">Tekrar</div><div class="stepper">' +
                 '<button type="button" class="stepper-btn" data-action="step-input" data-target="reps-' + ex.id + '" data-step="-1" data-min="0">−</button>' +
-                '<input type="number" inputmode="numeric" id="reps-' + ex.id + '" value="' + prefillReps + '">' +
+                '<input type="text" inputmode="numeric" id="reps-' + ex.id + '" value="' + prefillReps + '">' +
                 '<button type="button" class="stepper-btn" data-action="step-input" data-target="reps-' + ex.id + '" data-step="1" data-min="0">+</button>' +
               '</div></div>' +
               '<div class="stepper-field"><div class="stepper-field-label">Kilo (kg)</div><div class="stepper">' +
                 '<button type="button" class="stepper-btn" data-action="step-input" data-target="weight-' + ex.id + '" data-step="-2.5" data-min="0">−</button>' +
-                '<input type="number" inputmode="decimal" id="weight-' + ex.id + '" value="' + prefillWeight + '">' +
+                '<input type="text" inputmode="decimal" id="weight-' + ex.id + '" value="' + prefillWeight + '">' +
                 '<button type="button" class="stepper-btn" data-action="step-input" data-target="weight-' + ex.id + '" data-step="2.5" data-min="0">+</button>' +
               '</div></div>' +
             '</div>' +
@@ -2452,7 +2452,7 @@
       '<div class="steps-card-head"><div class="home-tile-icon" style="background:var(--legs-soft);color:var(--legs)">' + icon('footprints') + '</div>' +
       '<div><div class="stat-card-label">Adım Sayısı</div><div class="hint">Sağlık uygulamandan bakıp elle gir</div></div></div>' +
       '<div class="steps-input-row">' +
-        '<input id="dd-steps" type="number" inputmode="numeric" placeholder="Örn. 8000" value="' + (d.steps!=null ? d.steps : '') + '">' +
+        '<input id="dd-steps" type="text" inputmode="numeric" placeholder="Örn. 8000" value="' + (d.steps!=null ? d.steps : '') + '">' +
         '<button type="button" class="btn btn-primary btn-sm" data-action="save-steps" data-key="' + key + '">Kaydet</button>' +
       '</div>' +
       (d.steps ? ('<div class="steps-cal-note"><span class="mchip cal">' + icon('flame') + ' ≈' + stepsCal + ' kcal yakıldı</span></div>') : '') +
@@ -2472,8 +2472,8 @@
       '<div class="form">' +
         '<div class="field"><label>Tür</label><select id="dd-cardio-type">' + CARDIO_TYPES.map(function(t){ return '<option value="' + t.key + '">' + t.label + '</option>'; }).join('') + '</select></div>' +
         '<div class="field-row cols-2">' +
-          '<div class="field"><label>Süre (dk)</label><input id="dd-cardio-duration" type="number" inputmode="numeric" placeholder="30"></div>' +
-          '<div class="field"><label>Mesafe (km, opsiyonel)</label><input id="dd-cardio-distance" type="number" inputmode="decimal" placeholder="—"></div>' +
+          '<div class="field"><label>Süre (dk)</label><input id="dd-cardio-duration" type="text" inputmode="numeric" placeholder="30"></div>' +
+          '<div class="field"><label>Mesafe (km, opsiyonel)</label><input id="dd-cardio-distance" type="text" inputmode="decimal" placeholder="—"></div>' +
         '</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="add-cardio-entry" data-key="' + key + '">' + icon('plus') + ' Ekle</button>' +
       '</div></details>';
@@ -2491,20 +2491,20 @@
         }).join('') +
       '</div></div>' +
       '<div class="form">' +
-        '<div class="field"><label>Günlük kalori hedefi</label><input id="s-cal" type="number" inputmode="numeric" value="' + s.goalCalories + '"></div>' +
+        '<div class="field"><label>Günlük kalori hedefi</label><input id="s-cal" type="text" inputmode="numeric" value="' + s.goalCalories + '"></div>' +
         '<div class="field-row cols-2">' +
-          '<div class="field"><label>Protein (g)</label><input id="s-p" type="number" inputmode="numeric" value="' + s.goalProtein + '"></div>' +
-          '<div class="field"><label>Yağ (g)</label><input id="s-f" type="number" inputmode="numeric" value="' + s.goalFat + '"></div>' +
+          '<div class="field"><label>Protein (g)</label><input id="s-p" type="text" inputmode="numeric" value="' + s.goalProtein + '"></div>' +
+          '<div class="field"><label>Yağ (g)</label><input id="s-f" type="text" inputmode="numeric" value="' + s.goalFat + '"></div>' +
         '</div>' +
-        '<div class="field"><label>Karbonhidrat (g)</label><input id="s-k" type="number" inputmode="numeric" value="' + s.goalCarb + '"></div>' +
+        '<div class="field"><label>Karbonhidrat (g)</label><input id="s-k" type="text" inputmode="numeric" value="' + s.goalCarb + '"></div>' +
         '<div class="field-row cols-2">' +
-          '<div class="field"><label>Haftalık antrenman hedefi (gün)</label><input id="s-wg" type="number" inputmode="numeric" value="' + s.workoutGoalPerWeek + '"></div>' +
-          '<div class="field"><label>Haftalık kardiyo hedefi (dk)</label><input id="s-cg" type="number" inputmode="numeric" value="' + s.cardioGoalMinPerWeek + '"></div>' +
+          '<div class="field"><label>Haftalık antrenman hedefi (gün)</label><input id="s-wg" type="text" inputmode="numeric" value="' + s.workoutGoalPerWeek + '"></div>' +
+          '<div class="field"><label>Haftalık kardiyo hedefi (dk)</label><input id="s-cg" type="text" inputmode="numeric" value="' + s.cardioGoalMinPerWeek + '"></div>' +
         '</div>' +
-        '<div class="field"><label>Günlük adım hedefi</label><input id="s-sg" type="number" inputmode="numeric" value="' + s.stepsGoalPerDay + '"></div>' +
+        '<div class="field"><label>Günlük adım hedefi</label><input id="s-sg" type="text" inputmode="numeric" value="' + s.stepsGoalPerDay + '"></div>' +
         '<div class="field-row cols-2">' +
-          '<div class="field"><label>Haftalık kilo hedefi (kg)</label><input id="s-wwg" type="number" inputmode="decimal" step="0.1" value="' + s.weeklyWeightGoalKg + '"></div>' +
-          '<div class="field"><label>Aylık kilo hedefi (kg)</label><input id="s-mwg" type="number" inputmode="decimal" step="0.1" value="' + s.monthlyWeightGoalKg + '"></div>' +
+          '<div class="field"><label>Haftalık kilo hedefi (kg)</label><input id="s-wwg" type="text" inputmode="decimal" step="0.1" value="' + s.weeklyWeightGoalKg + '"></div>' +
+          '<div class="field"><label>Aylık kilo hedefi (kg)</label><input id="s-mwg" type="text" inputmode="decimal" step="0.1" value="' + s.monthlyWeightGoalKg + '"></div>' +
         '</div>' +
         '<div class="hint">Kilo verme hedefi negatif (örn. -0.5), kilo alma hedefi pozitif yazılır.</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="save-settings">Kaydet</button>' +
@@ -2563,7 +2563,7 @@
       }
       html += '<div class="field-row cols-2" style="margin-top:8px">' +
         '<input type="text" placeholder="Hareket adı" id="pe-name-' + tkey + '">' +
-        '<input type="number" inputmode="decimal" placeholder="Hedef kg" id="pe-weight-' + tkey + '">' +
+        '<input type="text" inputmode="decimal" placeholder="Hedef kg" id="pe-weight-' + tkey + '">' +
       '</div>' +
       '<button type="button" class="btn btn-ghost btn-sm btn-block" style="margin-top:8px" data-action="add-planned-exercise" data-type="' + tkey + '">' + icon('plus') + ' Hareket Ekle</button>' +
       '</div>';
@@ -2587,10 +2587,10 @@
     html += '<div class="section-title">Yeni Öğün</div><div class="form">' +
       '<div class="field"><label>Öğün adı</label><input id="mp-label" type="text" placeholder="Örn. Kahvaltı — 4 yumurta + yulaf"></div>' +
       '<div class="field-row cols-4">' +
-        '<div class="field"><label>Kcal</label><input id="mp-cal" type="number" inputmode="numeric" placeholder="0"></div>' +
-        '<div class="field"><label>Prot.</label><input id="mp-p" type="number" inputmode="numeric" placeholder="0"></div>' +
-        '<div class="field"><label>Yağ</label><input id="mp-f" type="number" inputmode="numeric" placeholder="0"></div>' +
-        '<div class="field"><label>Karb.</label><input id="mp-k" type="number" inputmode="numeric" placeholder="0"></div>' +
+        '<div class="field"><label>Kcal</label><input id="mp-cal" type="text" inputmode="numeric" placeholder="0"></div>' +
+        '<div class="field"><label>Prot.</label><input id="mp-p" type="text" inputmode="numeric" placeholder="0"></div>' +
+        '<div class="field"><label>Yağ</label><input id="mp-f" type="text" inputmode="numeric" placeholder="0"></div>' +
+        '<div class="field"><label>Karb.</label><input id="mp-k" type="text" inputmode="numeric" placeholder="0"></div>' +
       '</div>' +
       '<button type="button" class="btn btn-primary btn-block" data-action="add-mealplan-item">' + icon('plus') + ' Plana Ekle</button>' +
     '</div></div></div>';
@@ -2604,7 +2604,7 @@
       '<div class="form">' +
         '<div class="field-row cols-2">' +
           '<div class="field"><label>Tarih</label><input id="wl-date" type="date" value="' + todayKey() + '"></div>' +
-          '<div class="field"><label>Kilo (kg)</label><input id="wl-kg" type="number" inputmode="decimal" step="0.1" placeholder="0"></div>' +
+          '<div class="field"><label>Kilo (kg)</label><input id="wl-kg" type="text" inputmode="decimal" step="0.1" placeholder="0"></div>' +
         '</div>' +
         '<button type="button" class="btn btn-primary btn-block" data-action="save-weight-entry">' + icon('plus') + ' Kaydet</button>' +
       '</div>';
@@ -2638,7 +2638,7 @@
       '<div class="field"><label>Bölge</label><input id="ms-site" type="text" placeholder="Örn. Biceps, Bel, Göğüs..."></div>' +
       '<div class="field-row cols-2">' +
         '<div class="field"><label>Tarih</label><input id="ms-date" type="date" value="' + todayKey() + '"></div>' +
-        '<div class="field"><label>Değer (cm)</label><input id="ms-val" type="number" inputmode="decimal" step="0.1" placeholder="0"></div>' +
+        '<div class="field"><label>Değer (cm)</label><input id="ms-val" type="text" inputmode="decimal" step="0.1" placeholder="0"></div>' +
       '</div>' +
       '<button type="button" class="btn btn-primary btn-block" data-action="save-measure-entry">' + icon('plus') + ' Ölçüm Kaydet</button>' +
     '</div>';
