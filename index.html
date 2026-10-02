@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Spor Defteri</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1E8F86">
+<meta name="theme-color" content="#FF6A33">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,56 +16,56 @@
 <style id="app-style">
   :root{
     color-scheme: light;
-    --bg:#F0F3F5; --surface:#FFFFFF; --surface-2:#E7ECEF; --surface-3:#F7F9FA;
-    --border:#DCE3E7; --text:#101820; --text-dim:#5C6B74; --text-faint:#8B99A1;
-    --accent:#1E8F86; --accent-soft:#DCF1EE;
+    --bg:#F3F1EF; --surface:#FFFFFF; --surface-2:#ECE7E3; --surface-3:#F8F6F4;
+    --border:#E2DAD3; --text:#1A1310; --text-dim:#6B5F58; --text-faint:#9C8E85;
+    --accent:#FF6A33; --accent2:#E8302E; --accent-soft:#FFE7DC;
     --cal:#E8703A; --cal-soft:#FBE6DC;
     --protein:#1E9E5C; --protein-soft:#DEF3E7;
     --fat:#C68A1A; --fat-soft:#F6ECD6;
     --carb:#2D72C9; --carb-soft:#DEEAF9;
-    --push:#D8503B; --push-soft:#FAE0DA;
-    --pull:#1E8F86; --pull-soft:#DCF1EE;
+    --push:#C9344E; --push-soft:#FAE0E4;
+    --pull:#FF6A33; --pull-soft:#FFE7DC;
     --legs:#7C5CC9; --legs-soft:#E9E2F8;
     --upper:#C4791E; --upper-soft:#F5E5D2;
-    --rest:#8B99A1; --rest-soft:#E7ECEF;
+    --rest:#9C8E85; --rest-soft:#ECE7E3;
     --good:#1E9E5C; --bad:#D8503B;
-    --shadow: 0 1px 2px rgba(16,24,32,.06), 0 8px 20px -12px rgba(16,24,32,.15);
+    --shadow: 0 1px 2px rgba(26,19,16,.06), 0 8px 20px -12px rgba(26,19,16,.15);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
       color-scheme: dark;
-      --bg:#0B141C; --surface:#131E28; --surface-2:#1C2933; --surface-3:#0F1922;
-      --border:#233240; --text:#F2F6F8; --text-dim:#93A5AF; --text-faint:#5E717C;
-      --accent:#3BC4B8; --accent-soft:#122E2C;
+      --bg:#120D0C; --surface:#1E1512; --surface-2:#2A1E19; --surface-3:#180F0D;
+      --border:#3A2B24; --text:#FBF2EC; --text-dim:#C9B2A6; --text-faint:#8C7468;
+      --accent:#FF8255; --accent2:#FF4C3B; --accent-soft:#3A1F14;
       --cal:#FF8A5C; --cal-soft:#2E1F16;
       --protein:#4EDB8D; --protein-soft:#132A1E;
       --fat:#F0BE4E; --fat-soft:#2C2413;
       --carb:#5FA8F5; --carb-soft:#132330;
-      --push:#FF7A66; --push-soft:#2E1B17;
-      --pull:#3BC4B8; --pull-soft:#122E2C;
+      --push:#FF6B7A; --push-soft:#331A1D;
+      --pull:#FF8255; --pull-soft:#3A1F14;
       --legs:#B79BF0; --legs-soft:#211C33;
       --upper:#F0AE5C; --upper-soft:#2C2213;
-      --rest:#5E717C; --rest-soft:#1C2933;
+      --rest:#8C7468; --rest-soft:#2A1E19;
       --good:#4EDB8D; --bad:#FF7A66;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
     }
   }
   :root[data-theme="dark"]{
     color-scheme: dark;
-    --bg:#0B141C; --surface:#131E28; --surface-2:#1C2933; --surface-3:#0F1922;
-    --border:#233240; --text:#F2F6F8; --text-dim:#93A5AF; --text-faint:#5E717C;
-    --accent:#3BC4B8; --accent-soft:#122E2C;
+    --bg:#120D0C; --surface:#1E1512; --surface-2:#2A1E19; --surface-3:#180F0D;
+    --border:#3A2B24; --text:#FBF2EC; --text-dim:#C9B2A6; --text-faint:#8C7468;
+    --accent:#FF8255; --accent2:#FF4C3B; --accent-soft:#3A1F14;
     --cal:#FF8A5C; --cal-soft:#2E1F16;
     --protein:#4EDB8D; --protein-soft:#132A1E;
     --fat:#F0BE4E; --fat-soft:#2C2413;
     --carb:#5FA8F5; --carb-soft:#132330;
-    --push:#FF7A66; --push-soft:#2E1B17;
-    --pull:#3BC4B8; --pull-soft:#122E2C;
+    --push:#FF6B7A; --push-soft:#331A1D;
+    --pull:#FF8255; --pull-soft:#3A1F14;
     --legs:#B79BF0; --legs-soft:#211C33;
     --upper:#F0AE5C; --upper-soft:#2C2213;
-    --rest:#5E717C; --rest-soft:#1C2933;
+    --rest:#8C7468; --rest-soft:#2A1E19;
     --good:#4EDB8D; --bad:#FF7A66;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
   }
 
   *{box-sizing:border-box;}
@@ -125,9 +125,9 @@
   .stat-bar-foot{ display:flex; justify-content:space-between; margin-top:7px; font-size:11px; color:var(--text-faint); }
   .stat-bar-foot b{ color:var(--text-dim); }
 
-  .hero-card{ background:linear-gradient(135deg, var(--accent), var(--pull) 130%); border-radius:20px; padding:18px; color:#fff; box-shadow:var(--shadow); }
-  :root:not([data-theme="light"]) .hero-card{ background:linear-gradient(135deg, #124C48, #0E3A38 140%); }
-  :root[data-theme="dark"] .hero-card{ background:linear-gradient(135deg, #124C48, #0E3A38 140%); }
+  .hero-card{ background:linear-gradient(135deg, var(--accent), var(--accent2) 130%); border-radius:20px; padding:18px; color:#fff; box-shadow:var(--shadow); }
+  :root:not([data-theme="light"]) .hero-card{ background:linear-gradient(135deg, #B8431F, #7A1612 140%); }
+  :root[data-theme="dark"] .hero-card{ background:linear-gradient(135deg, #B8431F, #7A1612 140%); }
   .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; }
   .hero-label{ font-size:12px; font-weight:600; opacity:.85; }
   .hero-big{ font-family:'Sora',sans-serif; font-weight:800; font-size:32px; margin-top:4px; letter-spacing:-.4px; }
@@ -252,6 +252,24 @@
   .set-add-actions{ display:flex; gap:8px; margin-top:9px; }
   .set-add-actions .btn{ flex:1; }
 
+  .ex-card.is-collapsed{ padding:10px 12px; cursor:pointer; }
+  .ex-card.is-collapsed .ex-card-head{ margin-bottom:0; }
+  .ex-card-summary{ font-size:12px; color:var(--text-faint); margin-top:2px; }
+  .ex-card-collapse-hint{ font-size:11px; color:var(--accent); font-weight:700; }
+
+  .session-badge{ display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--accent-soft); color:var(--accent); border-radius:14px; padding:11px 14px; margin-bottom:14px; font-weight:700; }
+  .session-badge-left{ display:flex; align-items:center; gap:8px; font-size:14px; }
+  .session-badge-left svg{ width:17px; height:17px; }
+  .session-badge button{ border:none; background:var(--surface); color:var(--text-dim); border-radius:9px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer; }
+
+  .rest-timer-bar{ position:sticky; top:calc(env(safe-area-inset-top,0px) + 54px); z-index:19; display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(135deg, var(--accent), var(--accent2) 130%); color:#fff; border-radius:14px; padding:11px 14px; margin:8px 16px 0; box-shadow:var(--shadow); }
+  .rest-timer-left{ display:flex; align-items:center; gap:9px; }
+  .rest-timer-left svg{ width:18px; height:18px; }
+  .rest-timer-label{ font-size:11px; opacity:.85; font-weight:600; }
+  .rest-timer-val{ font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:800; }
+  .rest-timer-bar button{ border:none; background:rgba(255,255,255,.22); color:#fff; border-radius:9px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .rest-timer-bar button svg{ width:15px; height:15px; }
+
   .tabbar{
     position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--surface); border-top:1px solid var(--border);
     padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px)); display:flex; max-width:520px; margin:0 auto;
@@ -305,6 +323,7 @@
   .check-row-main{ flex:1; min-width:0; }
   .check-row-name{ font-weight:600; font-size:14px; }
   .check-row.is-checked .check-row-name{ color:var(--accent); }
+  .check-row-name.is-done-text{ text-decoration:line-through; }
   .check-row-sub{ font-size:11.5px; color:var(--text-faint); margin-top:2px; }
 
   /* ---------- açılır manuel giriş ---------- */
@@ -386,6 +405,21 @@
   .week-strip-cell.is-today .week-strip-num{ color:var(--accent); }
   .week-strip-dots{ display:flex; gap:2.5px; min-height:5px; align-items:center; }
   .week-strip-dot{ width:5px; height:5px; border-radius:50%; }
+  .week-strip-cell.is-selected{ box-shadow:0 0 0 2px var(--text) inset, var(--shadow); }
+
+  .day-sum-card{ margin-top:10px; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:15px; box-shadow:var(--shadow); }
+  .day-sum-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .day-sum-title{ font-family:'Sora',sans-serif; font-weight:800; font-size:15px; }
+  .day-sum-close{ background:var(--surface-2); border:none; border-radius:9px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; color:var(--text-dim); cursor:pointer; }
+  .day-sum-close svg{ width:14px; height:14px; }
+  .day-sum-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .day-sum-item{ background:var(--surface-3); border-radius:13px; padding:10px 11px; display:flex; align-items:center; gap:9px; }
+  .day-sum-item-icon{ width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .day-sum-item-icon svg{ width:16px; height:16px; }
+  .day-sum-item-label{ font-size:10.5px; color:var(--text-faint); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
+  .day-sum-item-val{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13.5px; margin-top:1px; }
+  .day-sum-foot{ display:flex; gap:8px; margin-top:12px; }
+  .day-sum-foot .btn{ flex:1; }
 
   /* ---------- vücut ölçüleri & fotoğraf ---------- */
   .measure-chip-row{ display:flex; gap:8px; overflow-x:auto; margin-top:12px; padding-bottom:2px; }
@@ -442,7 +476,7 @@
   .level-stat-mid{ flex:1; min-width:0; }
   .level-stat-name{ font-size:10px; font-weight:700; letter-spacing:.05em; color:var(--text-faint); margin-bottom:4px; }
   .level-stat-track{ height:5px; border-radius:99px; background:var(--surface-2); overflow:hidden; }
-  .level-stat-fill{ height:100%; border-radius:99px; background:linear-gradient(90deg, var(--accent), var(--pull)); }
+  .level-stat-fill{ height:100%; border-radius:99px; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
   .level-stat-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:13.5px; width:24px; text-align:right; flex:none; }
 
   .day-icon{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex:none; }
@@ -638,6 +672,50 @@
   function round(n){ return Math.round(num(n)); }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function pad2(n){ return (n<10?'0':'') + n; }
+  function fmtElapsed(sec){ return pad2(Math.floor(sec/60)) + ':' + pad2(sec%60); }
+
+  /* ---------- dinlenme sayacı + antrenman seansı (ekrana özel, kaydedilmiyor) ---------- */
+  var restTimer = null; /* {endsAt, exName} */
+  var restTimerIntervalId = null;
+  function startRestTimer(exName){
+    restTimer = { endsAt: Date.now() + 120000, exName: exName };
+    if (restTimerIntervalId) clearInterval(restTimerIntervalId);
+    restTimerIntervalId = setInterval(tickRestTimer, 1000);
+  }
+  function tickRestTimer(){
+    if (!restTimer){ if (restTimerIntervalId){ clearInterval(restTimerIntervalId); restTimerIntervalId = null; } return; }
+    var secondsLeft = Math.max(0, Math.round((restTimer.endsAt - Date.now()) / 1000));
+    if (secondsLeft <= 0){
+      restTimer = null;
+      if (restTimerIntervalId){ clearInterval(restTimerIntervalId); restTimerIntervalId = null; }
+      renderAll();
+      return;
+    }
+    var el = document.getElementById('rest-timer-val');
+    if (el) el.textContent = fmtElapsed(secondsLeft); else renderAll();
+  }
+  function renderRestTimerBar(){
+    if (!restTimer) return '';
+    var secondsLeft = Math.max(0, Math.round((restTimer.endsAt - Date.now()) / 1000));
+    return '<div class="rest-timer-bar">' +
+      '<div class="rest-timer-left">' + icon('timer') +
+      '<div><div class="rest-timer-label">Dinlenme' + (restTimer.exName ? (' · ' + esc(restTimer.exName)) : '') + '</div>' +
+      '<div class="rest-timer-val" id="rest-timer-val">' + fmtElapsed(secondsLeft) + '</div></div></div>' +
+      '<button type="button" data-action="stop-rest-timer">' + icon('close') + '</button>' +
+    '</div>';
+  }
+
+  var workoutSessionStartedAt = null;
+  var sessionIntervalId = null;
+  function startSessionInterval(){
+    if (sessionIntervalId) clearInterval(sessionIntervalId);
+    sessionIntervalId = setInterval(function(){
+      if (!workoutSessionStartedAt){ clearInterval(sessionIntervalId); sessionIntervalId = null; return; }
+      var el = document.getElementById('session-elapsed');
+      if (el) el.textContent = fmtElapsed(Math.max(0, Math.round((Date.now() - workoutSessionStartedAt) / 1000)));
+    }, 1000);
+  }
   function keyForDate(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
   function parseKey(key){ var p = key.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
   function todayKey(){ return keyForDate(new Date()); }
@@ -663,7 +741,12 @@
       chat:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9.5L5 20.4a.6.6 0 0 1-1-.45V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/><circle cx="8.3" cy="10.5" r="1.05" fill="currentColor"/><circle cx="12" cy="10.5" r="1.05" fill="currentColor"/><circle cx="15.7" cy="10.5" r="1.05" fill="currentColor"/>',
       send:'<path d="M3 11.2 20.5 3l-7.7 18-2.2-8.1-8.1-1.7Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>',
       ruler:'<path d="M4.5 15.5 15.5 4.5a1.5 1.5 0 0 1 2.1 0l1.9 1.9a1.5 1.5 0 0 1 0 2.1L8.5 19.5a1.5 1.5 0 0 1-2.1 0l-1.9-1.9a1.5 1.5 0 0 1 0-2.1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M13 7l1.6 1.6M10.4 9.6 12 11.2M7.8 12.2l1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
-      camera:'<path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6A1 1 0 0 1 9 5h6a1 1 0 0 1 .86.5L16.8 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.6" fill="none"/>'
+      camera:'<path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6A1 1 0 0 1 9 5h6a1 1 0 0 1 .86.5L16.8 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.6" fill="none"/>',
+      droplet:'<path d="M12 2.5s7 7.4 7 12.3a7 7 0 1 1-14 0c0-4.9 7-12.3 7-12.3Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/>',
+      play:'<path d="M7 4.5v15l13-7.5-13-7.5Z" stroke="currentColor" stroke-width="1.6" fill="currentColor" stroke-linejoin="round"/>',
+      timer:'<circle cx="12" cy="13.5" r="8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 9.5V14l3 2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 2h5M12 2v2.6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>',
+      note:'<path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M14.5 3v4.5H19" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      stop:'<rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/>'
     };
     return '<svg viewBox="0 0 24 24" class="' + (cls||'') + '" fill="none">' + (paths[name]||'') + '</svg>';
   }
@@ -734,7 +817,7 @@
       v:1,
       settings:{
         goalCalories:2400, goalProtein:180, goalFat:80, goalCarb:260,
-        workoutGoalPerWeek:4, cardioGoalMinPerWeek:90, stepsGoalPerDay:8000,
+        workoutGoalPerWeek:4, cardioGoalMinPerWeek:90, stepsGoalPerDay:8000, waterGoalMl:2500,
         weeklyWeightGoalKg:-0.5, monthlyWeightGoalKg:-2
       },
       plan:{ 1:'push', 2:'rest', 3:'pull', 4:'legs', 5:'upper', 6:'rest', 0:'rest' },
@@ -746,7 +829,7 @@
       days:{}
     };
   }
-  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null }; }
+  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null, water:0, agenda:[], note:'' }; }
   function normalizeState(s){
     var d = defaultState();
     if (!s || typeof s !== 'object') return d;
@@ -771,7 +854,12 @@
         exercises: Array.isArray(day.exercises) ? day.exercises : [],
         durationMin: day.durationMin || null,
         cardio: Array.isArray(day.cardio) ? day.cardio : [],
-        steps: (typeof day.steps === 'number' && day.steps > 0) ? day.steps : null
+        steps: (typeof day.steps === 'number' && day.steps > 0) ? day.steps : null,
+        water: (typeof day.water === 'number' && day.water > 0) ? day.water : 0,
+        agenda: Array.isArray(day.agenda) ? day.agenda.map(function(it){
+          return { id: it.id || newId(), time: (typeof it.time === 'string') ? it.time : null, text: (typeof it.text === 'string') ? it.text : '', done: !!it.done };
+        }) : [],
+        note: (typeof day.note === 'string') ? day.note : ''
       };
     });
     return out;
@@ -831,7 +919,11 @@
     homeWorkoutExpanded: false,
     exerciseHistoryName: null,
     selectedRegion: null,
-    manualAddOpen: { nutrition:false, workout:false }
+    manualAddOpen: { nutrition:false, workout:false },
+    activeExerciseId: null,
+    agendaKey: null,
+    agendaSubTab: 'plan',
+    homeSelectedDayKey: null
   };
 
   /* ---------- ui durumunu hatırlama (sayfa aniden yenilenirse ana sayfaya atmasın) ---------- */
@@ -861,7 +953,8 @@
       if (snap.tab) ui.tab = snap.tab;
       if (snap.period) ui.period = snap.period;
       if (snap.homePeriod) ui.homePeriod = snap.homePeriod;
-      if (snap.cursor){ var c = parseKey(snap.cursor); if (!isNaN(c.getTime())) ui.cursor = c; }
+      /* ui.cursor kasıtlı olarak geri yüklenmiyor - her sayfa açılışında gerçek "bugün"den başlasın
+         (eski bir ay/gün'de kalıp örn. ay değiştiğinde eski ayda takılı kalmasın) */
       if (snap.dayDetailKey) ui.dayDetailKey = snap.dayDetailKey;
       if (snap.dayDetailKind) ui.dayDetailKind = snap.dayDetailKind;
       ui.settingsOpen = !!snap.settingsOpen;
@@ -990,6 +1083,31 @@
         },
         required:['site','valueCm']
       }
+    },
+    {
+      name: 'add_agenda_item',
+      description: 'Belirtilen güne, Plan sekmesindeki ajandaya (günlük yapılacaklar listesi) saat (opsiyonel) ve metinle bir madde ekler.',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string', description:'YYYY-MM-DD. Belirtilmezse bugün.' },
+          time:{ type:'string', description:'Opsiyonel, HH:MM formatında, örn. 09:30' },
+          text:{ type:'string', description:'Yapılacak madde metni' }
+        },
+        required:['text']
+      }
+    },
+    {
+      name: 'save_note',
+      description: 'Belirtilen günün Plan sekmesindeki notunu ayarlar (o günkü mevcut notun tamamen yerine geçer).',
+      input_schema: {
+        type:'object',
+        properties:{
+          date:{ type:'string', description:'YYYY-MM-DD. Belirtilmezse bugün.' },
+          text:{ type:'string', description:'Not metni' }
+        },
+        required:['text']
+      }
     }
   ];
 
@@ -1053,6 +1171,20 @@
         scheduleSave(); renderAll();
         return { ok:true, message: lmKey + ' için ' + lmSite + ' ölçüsü ' + lmVal + ' cm olarak kaydedildi.' };
       }
+      if (name === 'add_agenda_item'){
+        var aaKey = aiResolveDateKey(input.date);
+        var aaText = String(input.text||'').trim();
+        if (!aaText) return { ok:false, message:'Madde metni gerekli.' };
+        dayOf(aaKey).agenda.push({ id:newId(), time: input.time || null, text: aaText, done:false });
+        scheduleSave(); renderAll();
+        return { ok:true, message: aaKey + ' ajandasına "' + aaText + '" eklendi.' };
+      }
+      if (name === 'save_note'){
+        var snKey = aiResolveDateKey(input.date);
+        dayOf(snKey).note = String(input.text||'');
+        scheduleSave(); renderAll();
+        return { ok:true, message: snKey + ' notu kaydedildi.' };
+      }
       return { ok:false, message:'Bilinmeyen işlem: ' + name };
     } catch(errTool){
       return { ok:false, message:'Hata oluştu: ' + (errTool && errTool.message ? errTool.message : 'bilinmeyen') };
@@ -1083,6 +1215,10 @@
     return 'Sen kullanıcının "Spor Defteri" uygulamasındaki kişisel antrenman/beslenme/kardiyo asistanısın. ' +
       'Türkçe, kısa ve samimi cevap ver, gereksiz uzatma. Kullanıcının güncel verisi (JSON) aşağıda; analitik sorularını ' +
       '(örn. "bu hafta kaç antrenman yaptım", "ortalama proteinim ne") doğrudan bu veriden hesaplayıp cevapla. ' +
+      '"gunler" altındaki her günün nesnesinde "agenda" (Plan sekmesindeki günlük yapılacaklar listesi - her madde ' +
+      '{time, text, done}) ve "note" (o güne özel, Plan sekmesindeki Notlar\'a yazılmış serbest metin not) alanları da var; ' +
+      'kullanıcı planıyla/ajandasıyla veya notlarıyla ilgili bir şey sorarsa (örn. "bugün ne yapacaktım", "dün not almış mıydım") ' +
+      'bu alanlardan cevap ver. ' +
       'Kullanıcı veri eklemeni/değiştirmeni isterse uygun aracı çağır; tarih belirtmezse bugünü (' + todayKey + ') kullan, ' +
       'tarihler her zaman YYYY-MM-DD formatında olmalı. Belirsiz bir şey varsa (hangi gün, kaç kg/tekrar vb.) uydurmadan kısaca sor.' +
       '\n\nGüncel veri:\n' + json;
@@ -1524,13 +1660,14 @@
   /* ---------- render: iskelet ---------- */
   function renderAll(){
     var root = document.getElementById('root');
-    var content = ui.tab==='home' ? renderHomeContent() : ui.tab==='nutrition' ? renderNutritionContent() : ui.tab==='workout' ? renderWorkoutContent() : renderCardioContent();
-    var isHome = ui.tab === 'home';
+    var content = ui.tab==='home' ? renderHomeContent() : ui.tab==='nutrition' ? renderNutritionContent() : ui.tab==='workout' ? renderWorkoutContent() : ui.tab==='agenda' ? renderAgendaContent() : renderCardioContent();
+    var hideTopNav = (ui.tab === 'home' || ui.tab === 'agenda');
     root.innerHTML =
       '<div class="app-shell">' +
         renderHeader() +
-        (isHome ? '' : renderMonthNav()) +
-        (isHome ? '' : renderPeriodToggle()) +
+        renderRestTimerBar() +
+        (hideTopNav ? '' : renderMonthNav()) +
+        (hideTopNav ? '' : renderPeriodToggle()) +
         '<div class="content" id="content">' + content + '</div>' +
         renderTabbar() +
         (ui.dayDetailKey ? renderDayDetailModal() : '') +
@@ -1548,7 +1685,7 @@
     if (aiOpen) scrollAiThreadToBottom();
   }
 
-  var TAB_LABELS = { home:'Ana Sayfa', nutrition:'Beslenme', workout:'Antrenman', cardio:'Kardiyo' };
+  var TAB_LABELS = { home:'Ana Sayfa', nutrition:'Beslenme', workout:'Antrenman', cardio:'Kardiyo', agenda:'Plan' };
 
   function renderHeader(){
     var planBtn = '';
@@ -1575,9 +1712,16 @@
 
   function renderMonthNav(){
     var y = ui.cursor.getFullYear(), m = ui.cursor.getMonth();
+    var label;
+    if (ui.period === 'day'){
+      var isT = keyForDate(ui.cursor) === todayKey();
+      label = ui.cursor.getDate() + ' ' + MONTHS[m] + ' ' + WEEKDAYS_FULL[ui.cursor.getDay()] + (isT ? ' · Bugün' : '');
+    } else {
+      label = MONTHS[m] + ' ' + y;
+    }
     return '<div class="month-nav">' +
       '<button class="month-nav-btn" data-action="month-prev">' + icon('chevronL') + '</button>' +
-      '<div class="month-nav-label">' + MONTHS[m] + ' ' + y + '</div>' +
+      '<div class="month-nav-label"' + (ui.period==='day' ? ' style="font-size:16px"' : '') + '>' + esc(label) + '</div>' +
       '<button class="month-nav-btn" data-action="month-next">' + icon('chevronR') + '</button>' +
     '</div>';
   }
@@ -1703,6 +1847,9 @@
       '<div class="net-cal-split"><div class="net-cal-split-in" style="width:' + netCalInPct + '%"></div><div class="net-cal-split-out" style="width:' + (100-netCalInPct) + '%"></div></div>' +
     '</div>';
 
+    html += renderStepsCard();
+    html += renderWaterCard();
+
     html += '<div class="section-title">Bu Hafta Genel Bakış</div>' + homeWeekStrip();
 
     html += '<div class="section-title">' + hpLabel + ' Detay</div>' + homeDetailSection(hp, scopeDays, scopeNut, scopeCardio, scopeSteps);
@@ -1713,27 +1860,124 @@
     return html;
   }
 
+  function renderStepsCard(){
+    var key = todayKey();
+    var d = dayOf(key);
+    var goal = state.settings.stepsGoalPerDay || 8000;
+    var cur = d.steps || 0;
+    var pct = goal > 0 ? Math.min(100, (cur / goal) * 100) : 0;
+    return '<div class="section-title">Adım</div>' +
+      '<div class="stat-card">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div class="home-tile-icon" style="background:var(--legs-soft);color:var(--legs)">' + icon('footprints') + '</div>' +
+            '<div><div class="stat-card-val" style="font-size:18px">' + cur.toLocaleString('tr-TR') + '<span> / ' + goal.toLocaleString('tr-TR') + '</span></div>' +
+            (cur > 0 ? '<div class="hint">≈' + stepsCalories(cur) + ' kcal yakıldı</div>' : '') + '</div>' +
+          '</div>' +
+          '<div class="home-tile-pct" style="background:var(--legs-soft);color:var(--legs)">%' + round(pct) + '</div>' +
+        '</div>' +
+        '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + pct + '%;background:var(--legs)"></div></div>' +
+        '<div class="steps-input-row" style="margin-top:12px">' +
+          '<input id="home-steps" type="text" inputmode="numeric" placeholder="Örn. 8000" value="' + (cur || '') + '">' +
+          '<button type="button" class="btn btn-primary btn-sm" data-action="save-steps-home">Kaydet</button>' +
+        '</div>' +
+        '<div class="quick-add-row" style="padding-top:10px">' +
+          [2000,5000,8000,10000,12000].map(function(n){
+            return '<button type="button" class="quick-add-chip' + (cur===n?' is-active':'') + '" data-action="set-steps-quick" data-steps="' + n + '">' + n.toLocaleString('tr-TR') + '</button>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderWaterCard(){
+    var key = todayKey();
+    var d = dayOf(key);
+    var goal = state.settings.waterGoalMl || 2500;
+    var cur = d.water || 0;
+    var pct = goal > 0 ? Math.min(100, (cur / goal) * 100) : 0;
+    return '<div class="section-title">Su</div>' +
+      '<div class="stat-card">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div class="home-tile-icon" style="background:var(--carb-soft);color:var(--carb)">' + icon('droplet') + '</div>' +
+            '<div><div class="stat-card-val" style="font-size:18px">' + cur.toLocaleString('tr-TR') + '<span> / ' + goal.toLocaleString('tr-TR') + ' ml</span></div></div>' +
+          '</div>' +
+          '<div class="home-tile-pct" style="background:var(--carb-soft);color:var(--carb)">%' + round(pct) + '</div>' +
+        '</div>' +
+        '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + pct + '%;background:var(--carb)"></div></div>' +
+        '<div class="quick-add-row" style="padding-top:12px">' +
+          [250,500,750].map(function(ml){
+            return '<button type="button" class="quick-add-chip" data-action="add-water" data-ml="' + ml + '">' + icon('droplet') + '+' + ml + ' ml</button>';
+          }).join('') +
+          (cur > 0 ? '<button type="button" class="quick-add-chip" data-action="reset-water">Sıfırla</button>' : '') +
+        '</div>' +
+      '</div>';
+  }
+
   function homeWeekStrip(){
     var week = currentWeekDays();
     var html = '<div class="week-strip">';
     week.forEach(function(d){
       var key = keyForDate(d);
       var isToday = key === todayKey();
+      var isSelected = ui.homeSelectedDayKey === key;
       var wS = dayWorkoutSummary(d);
       var ti = typeInfo(wS.type);
+      var dd = dayOf(key);
       var hasBurned = dayBurnedCalories(key) > 0;
       var hasNutrition = dayNutritionTotals(key).cal > 0;
-      html += '<button type="button" class="week-strip-cell' + (isToday?' is-today':'') + '" data-action="open-week-day" data-key="' + key + '" style="background:var(' + ti.softVar + ');color:var(' + ti.colorVar + ')">' +
+      var hasSteps = !!dd.steps;
+      var hasWater = (dd.water||0) > 0;
+      html += '<button type="button" class="week-strip-cell' + (isToday?' is-today':'') + (isSelected?' is-selected':'') + '" data-action="open-week-day" data-key="' + key + '" style="background:var(' + ti.softVar + ');color:var(' + ti.colorVar + ')">' +
         '<span class="week-strip-wd">' + WEEKDAYS_SHORT[d.getDay()] + '</span>' +
         '<span class="week-strip-num">' + d.getDate() + '</span>' +
         '<span class="week-strip-dots">' +
           (wS.done ? ('<span class="week-strip-dot" style="background:var(' + ti.colorVar + ')"></span>') : '') +
           (hasNutrition ? '<span class="week-strip-dot" style="background:var(--cal)"></span>' : '') +
           (hasBurned ? '<span class="week-strip-dot" style="background:var(--accent)"></span>' : '') +
+          (hasSteps ? '<span class="week-strip-dot" style="background:var(--legs)"></span>' : '') +
+          (hasWater ? '<span class="week-strip-dot" style="background:var(--carb)"></span>' : '') +
         '</span>' +
       '</button>';
     });
     html += '</div>';
+    if (ui.homeSelectedDayKey) html += renderHomeDaySummaryCard(ui.homeSelectedDayKey);
+    return html;
+  }
+
+  function renderHomeDaySummaryCard(key){
+    var dateObj = parseKey(key);
+    var d = dayOf(key);
+    var s = state.settings;
+    var wS = dayWorkoutSummary(dateObj);
+    var ti = typeInfo(wS.type);
+    var nut = dayNutritionTotals(key);
+    var cardio = dayCardioTotals(key);
+    var isToday = key === todayKey();
+    var label = dateObj.getDate() + ' ' + MONTHS[dateObj.getMonth()] + ' ' + WEEKDAYS_FULL[dateObj.getDay()] + (isToday ? ' · Bugün' : '');
+    var workoutVal = wS.type === 'rest' ? 'Dinlenme' : (wS.done ? (wS.setCount + ' set · ' + wS.volume.toLocaleString('tr-TR') + ' kg') : 'Henüz kayıt yok');
+    var html = '<div class="day-sum-card">' +
+      '<div class="day-sum-head"><div class="day-sum-title">' + esc(label) + '</div>' +
+      '<button type="button" class="day-sum-close" data-action="close-home-day">' + icon('close') + '</button></div>' +
+      '<div class="day-sum-grid">' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(' + ti.softVar + ');color:var(' + ti.colorVar + ')">' + icon('dumbbell') + '</div>' +
+          '<div><div class="day-sum-item-label">' + ti.label + '</div><div class="day-sum-item-val">' + workoutVal + '</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--cal-soft);color:var(--cal)">' + icon('food') + '</div>' +
+          '<div><div class="day-sum-item-label">Beslenme</div><div class="day-sum-item-val">' + round(nut.cal).toLocaleString('tr-TR') + ' / ' + s.goalCalories.toLocaleString('tr-TR') + ' kcal</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--accent-soft);color:var(--accent)">' + icon('pulse') + '</div>' +
+          '<div><div class="day-sum-item-label">Kardiyo</div><div class="day-sum-item-val">' + (cardio.durationMin || 0) + ' dk</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--legs-soft);color:var(--legs)">' + icon('footprints') + '</div>' +
+          '<div><div class="day-sum-item-label">Adım</div><div class="day-sum-item-val">' + (d.steps ? d.steps.toLocaleString('tr-TR') : '—') + '</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--carb-soft);color:var(--carb)">' + icon('droplet') + '</div>' +
+          '<div><div class="day-sum-item-label">Su</div><div class="day-sum-item-val">' + (d.water ? d.water.toLocaleString('tr-TR') + ' ml' : '—') + '</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--surface-2);color:var(--text-dim)">' + icon('note') + '</div>' +
+          '<div><div class="day-sum-item-label">Not & Ajanda</div><div class="day-sum-item-val">' + (d.agenda.length ? (d.agenda.filter(function(a){return a.done;}).length + '/' + d.agenda.length + ' tamam') : (d.note ? 'Not var' : '—')) + '</div></div></div>' +
+      '</div>' +
+      '<div class="day-sum-foot">' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-action="open-home-day-agenda" data-key="' + key + '">' + icon('calendarDay') + ' Plan/Not</button>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-action="open-home-day-edit" data-key="' + key + '">' + icon('dumbbell') + ' Günü Düzenle</button>' +
+      '</div>' +
+    '</div>';
     return html;
   }
 
@@ -1818,7 +2062,7 @@
   function renderNutritionSummary(scope){
     var s = state.settings;
     var days, label, dayCount;
-    if (scope === 'day'){ days = [new Date()]; label = 'Bugün Alınan Kalori'; dayCount = 1; }
+    if (scope === 'day'){ days = [ui.cursor]; label = (keyForDate(ui.cursor)===todayKey() ? 'Bugün' : (ui.cursor.getDate() + ' ' + MONTHS[ui.cursor.getMonth()].slice(0,3))) + ' Alınan Kalori'; dayCount = 1; }
     else if (scope === 'week'){ days = currentWeekDays(); label = 'Bu Hafta Alınan Kalori'; dayCount = 7; }
     else { days = allDaysInMonth(ui.cursor.getFullYear(), ui.cursor.getMonth()); label = 'Bu Ay Alınan Kalori'; dayCount = days.length; }
     var t = sumNutritionForDays(days);
@@ -2088,7 +2332,7 @@
 
   function renderWorkoutSummary(scope){
     var days, label, weeksCount;
-    if (scope === 'day'){ days = [new Date()]; label = 'Bugünün Antrenmanı'; weeksCount = null; }
+    if (scope === 'day'){ days = [ui.cursor]; label = (keyForDate(ui.cursor)===todayKey() ? 'Bugünün' : (ui.cursor.getDate() + ' ' + MONTHS[ui.cursor.getMonth()].slice(0,3))) + ' Antrenmanı'; weeksCount = null; }
     else if (scope === 'week'){ days = currentWeekDays(); label = 'Bu Hafta Tamamlanan Antrenman'; weeksCount = 1; }
     else { days = allDaysInMonth(ui.cursor.getFullYear(), ui.cursor.getMonth()); label = 'Bu Ay Tamamlanan Antrenman'; weeksCount = getMonthWeeks(ui.cursor.getFullYear(), ui.cursor.getMonth()).length; }
 
@@ -2148,7 +2392,7 @@
     var y = ui.cursor.getFullYear(), m = ui.cursor.getMonth();
     var weeks = getMonthWeeks(y, m);
     var html = renderWorkoutSummary('day');
-    html += renderDayDetailWorkout(todayKey(), new Date());
+    html += renderDayDetailWorkout(keyForDate(ui.cursor), ui.cursor);
     html += '<div class="section-title">Gün Gün</div><div class="list">';
     weeks.forEach(function(wk){
       wk.days.forEach(function(d){ html += dayRowHtml(d, keyForDate(d), 'workout', null); });
@@ -2217,7 +2461,7 @@
   function renderCardioSummary(scope){
     var s = state.settings;
     var days, label, weeksCount;
-    if (scope === 'day'){ days = [new Date()]; label = 'Bugünkü Kardiyo'; weeksCount = null; }
+    if (scope === 'day'){ days = [ui.cursor]; label = (keyForDate(ui.cursor)===todayKey() ? 'Bugünkü' : (ui.cursor.getDate() + ' ' + MONTHS[ui.cursor.getMonth()].slice(0,3))) + ' Kardiyo'; weeksCount = null; }
     else if (scope === 'week'){ days = currentWeekDays(); label = 'Bu Hafta Kardiyo'; weeksCount = 1; }
     else { days = allDaysInMonth(ui.cursor.getFullYear(), ui.cursor.getMonth()); label = 'Bu Ay Kardiyo'; weeksCount = getMonthWeeks(ui.cursor.getFullYear(), ui.cursor.getMonth()).length; }
     var t = sumCardioForDays(days);
@@ -2360,7 +2604,17 @@
     var d = dayOf(key);
     var planType = state.plan[dateObj.getDay()] || 'rest';
     var currentType = d.workoutType || planType;
-    var html = '<div class="section-title">Bugünün Türü</div>' +
+    var sessionHtml = '';
+    if (key === todayKey() && currentType !== 'rest'){
+      if (workoutSessionStartedAt){
+        sessionHtml = '<div class="session-badge"><div class="session-badge-left">' + icon('play') +
+          '<span>Antrenmanda · <span class="num" id="session-elapsed">' + fmtElapsed(Math.max(0, Math.round((Date.now()-workoutSessionStartedAt)/1000))) + '</span></span></div>' +
+          '<button type="button" data-action="end-workout-session">Bitir</button></div>';
+      } else {
+        sessionHtml = '<button type="button" class="btn btn-primary btn-block" data-action="start-workout-session" style="margin-bottom:14px">' + icon('play') + ' Antrenman Başlat</button>';
+      }
+    }
+    var html = sessionHtml + '<div class="section-title">Bugünün Türü</div>' +
       '<div class="type-select-row" style="justify-content:flex-start;margin-bottom:12px">' +
       WORKOUT_TYPES.map(function(t){
         return '<button type="button" class="type-pill' + (currentType===t.key?' is-active':'') + '" style="background:var(' + t.softVar + ');color:var(' + t.colorVar + ')" data-action="set-day-type" data-key="' + key + '" data-type="' + t.key + '">' + t.label + '</button>';
@@ -2397,9 +2651,27 @@
     if (!d.exercises.length){
       html += '<div class="empty-state">Henüz egzersiz eklenmedi.</div>';
     } else {
+      var activeExId = ui.activeExerciseId;
+      if (!d.exercises.some(function(ex){ return ex.id === activeExId; })){
+        activeExId = d.exercises.length ? d.exercises[d.exercises.length-1].id : null;
+      }
       html += d.exercises.map(function(ex){
         var planEntry = (state.exercisePlans[currentType]||[]).filter(function(pe){ return pe.name.toLowerCase()===ex.name.toLowerCase(); })[0];
         var maxToday = ex.sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0);
+        var exRegion = regionForExercise(ex.name);
+        var regionNote = exRegion ? '<span class="region-tag">' + esc(exRegion) + '</span>' : '';
+        var isActive = ex.id === activeExId;
+        if (!isActive){
+          var lastSetC = ex.sets.length ? ex.sets[ex.sets.length-1] : null;
+          var summary = ex.sets.length ? (ex.sets.length + ' set · son ' + lastSetC.reps + '×' + lastSetC.weight + 'kg') : 'Henüz set yok';
+          return '<div class="ex-card is-collapsed" data-action="activate-exercise" data-exid="' + ex.id + '">' +
+            '<div class="ex-card-head"><div><span class="ex-card-name">' + esc(ex.name) + '</span> ' + regionNote +
+            '<div class="ex-card-summary">' + esc(summary) + '</div></div>' +
+            '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span class="ex-card-collapse-hint">Devam et</span>' +
+            '<button class="del-btn" data-action="delete-exercise" data-key="' + key + '" data-exid="' + ex.id + '">' + icon('trash') + '</button>' +
+            '</div></div></div>';
+        }
         var targetNote = planEntry && planEntry.targetWeight ? ('<span style="color:' + (maxToday>=planEntry.targetWeight?'var(--good)':'var(--text-faint)') + '">Hedef ' + planEntry.targetWeight + 'kg' + (maxToday>=planEntry.targetWeight?' ✓':'') + '</span>') : '';
         var lastSet = ex.sets.length ? ex.sets[ex.sets.length-1] : null;
         var histPerf = !lastSet ? lastPerformance(ex.name, key) : null;
@@ -2410,8 +2682,6 @@
         var analysisNote = (prevBest && maxToday > 0)
           ? ('<div class="hint" style="margin-top:2px">Önceki en iyi: ' + prevBest.weight + ' kg' + weightDeltaBadge(maxToday, prevBest.weight) + '</div>')
           : '';
-        var exRegion = regionForExercise(ex.name);
-        var regionNote = exRegion ? '<span class="region-tag">' + esc(exRegion) + '</span>' : '';
         return '<div class="ex-card"><div class="ex-card-head"><div><button type="button" class="ex-card-name" data-action="open-exercise-history" data-name="' + esc(ex.name) + '" style="background:none;border:none;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer;color:inherit;font:inherit">' + esc(ex.name) + '</button> ' + regionNote + (targetNote ? '<div class="hint" style="margin-top:2px">' + targetNote + '</div>' : '') + histNote + analysisNote + '</div>' +
           '<button class="del-btn" data-action="delete-exercise" data-key="' + key + '" data-exid="' + ex.id + '">' + icon('trash') + '</button></div>' +
           (ex.sets.length ? ('<div class="set-head-row"><span></span><span>Tekrar</span><span>Kilo (kg)</span><span></span></div>' +
@@ -2483,6 +2753,71 @@
     return html;
   }
 
+  /* ---------- Ajanda (günlük plan + notlar) ---------- */
+  function renderAgendaContent(){
+    var key = ui.agendaKey || todayKey();
+    var dateObj = parseKey(key);
+    var html = '<div class="tab-sub-row">' +
+      [{key:'plan',label:'Plan'},{key:'notes',label:'Notlar'}].map(function(t){
+        return '<button type="button" class="tab-sub-btn' + (ui.agendaSubTab===t.key?' is-active':'') + '" data-action="set-agenda-subtab" data-subtab="' + t.key + '">' + t.label + '</button>';
+      }).join('') +
+    '</div>';
+    html += renderAgendaDateNav(key, dateObj);
+    html += (ui.agendaSubTab === 'notes' ? renderNotesSection(key) : renderAgendaPlanSection(key));
+    return html;
+  }
+
+  function renderAgendaDateNav(key, dateObj){
+    var isToday = key === todayKey();
+    var label = dateObj.getDate() + ' ' + MONTHS[dateObj.getMonth()] + ' ' + WEEKDAYS_FULL[dateObj.getDay()] + (isToday ? ' · Bugün' : '');
+    return '<div class="month-nav" style="padding:12px 0 2px">' +
+      '<button class="month-nav-btn" data-action="agenda-day-prev">' + icon('chevronL') + '</button>' +
+      '<div class="month-nav-label" style="font-size:16px">' + esc(label) + '</div>' +
+      '<button class="month-nav-btn" data-action="agenda-day-next">' + icon('chevronR') + '</button>' +
+    '</div>';
+  }
+
+  function renderAgendaPlanSection(key){
+    var d = dayOf(key);
+    var items = d.agenda.slice().sort(function(a,b){
+      if (a.time && b.time) return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
+      if (a.time && !b.time) return -1;
+      if (!a.time && b.time) return 1;
+      return 0;
+    });
+    var html = '<div class="section-title">Yapılacaklar</div>';
+    if (!items.length){
+      html += '<div class="empty-state">Bu gün için henüz madde yok.</div>';
+    } else {
+      html += '<div class="check-list">' + items.map(function(it){
+        return '<div class="check-row' + (it.done?' is-checked':'') + '" data-action="toggle-agenda-item" data-key="' + key + '" data-id="' + it.id + '">' +
+          '<span class="check-circle">' + icon('check') + '</span>' +
+          '<div class="check-row-main"><div class="check-row-name' + (it.done?' is-done-text':'') + '">' +
+          (it.time ? '<span class="num" style="color:var(--text-faint);margin-right:7px">' + esc(it.time) + '</span>' : '') +
+          esc(it.text) + '</div></div>' +
+          '<button class="del-btn" data-action="delete-agenda-item" data-key="' + key + '" data-id="' + it.id + '">' + icon('trash') + '</button>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="form" style="margin-top:14px">' +
+      '<div class="field-row cols-2">' +
+        '<div class="field"><label>Saat (ops.)</label><input id="ag-time" type="text" inputmode="numeric" placeholder="09:30" maxlength="5"></div>' +
+        '<div class="field"><label>Madde</label><input id="ag-text" type="text" placeholder="Örn. Market alışverişi"></div>' +
+      '</div>' +
+      '<button type="button" class="btn btn-primary btn-block" data-action="add-agenda-item" data-key="' + key + '">' + icon('plus') + ' Ekle</button>' +
+    '</div>';
+    return html;
+  }
+
+  function renderNotesSection(key){
+    var d = dayOf(key);
+    return '<div class="section-title">Not</div>' +
+      '<div class="form">' +
+        '<textarea id="note-text" rows="9" placeholder="Bugünle ilgili notların..." style="width:100%;resize:vertical;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:14px">' + esc(d.note||'') + '</textarea>' +
+        '<button type="button" class="btn btn-primary btn-block" style="margin-top:10px" data-action="save-note" data-key="' + key + '">' + icon('check') + ' Kaydet</button>' +
+      '</div>';
+  }
+
   /* ---------- ayarlar & plan modalları ---------- */
   function renderSettingsModal(){
     var s = state.settings;
@@ -2504,7 +2839,10 @@
           '<div class="field"><label>Haftalık antrenman hedefi (gün)</label><input id="s-wg" type="text" inputmode="numeric" value="' + s.workoutGoalPerWeek + '"></div>' +
           '<div class="field"><label>Haftalık kardiyo hedefi (dk)</label><input id="s-cg" type="text" inputmode="numeric" value="' + s.cardioGoalMinPerWeek + '"></div>' +
         '</div>' +
-        '<div class="field"><label>Günlük adım hedefi</label><input id="s-sg" type="text" inputmode="numeric" value="' + s.stepsGoalPerDay + '"></div>' +
+        '<div class="field-row cols-2">' +
+          '<div class="field"><label>Günlük adım hedefi</label><input id="s-sg" type="text" inputmode="numeric" value="' + s.stepsGoalPerDay + '"></div>' +
+          '<div class="field"><label>Günlük su hedefi (ml)</label><input id="s-wat" type="text" inputmode="numeric" value="' + (s.waterGoalMl||2500) + '"></div>' +
+        '</div>' +
         '<div class="field-row cols-2">' +
           '<div class="field"><label>Haftalık kilo hedefi (kg)</label><input id="s-wwg" type="text" inputmode="decimal" step="0.1" value="' + s.weeklyWeightGoalKg + '"></div>' +
           '<div class="field"><label>Aylık kilo hedefi (kg)</label><input id="s-mwg" type="text" inputmode="decimal" step="0.1" value="' + s.monthlyWeightGoalKg + '"></div>' +
@@ -2759,6 +3097,7 @@
       '<button class="tab-btn' + (ui.tab==='nutrition'?' is-active':'') + '" data-action="set-tab" data-tab="nutrition">' + icon('food') + '<span>Beslenme</span></button>' +
       '<button class="tab-btn' + (ui.tab==='workout'?' is-active':'') + '" data-action="set-tab" data-tab="workout">' + icon('dumbbell') + '<span>Antrenman</span></button>' +
       '<button class="tab-btn' + (ui.tab==='cardio'?' is-active':'') + '" data-action="set-tab" data-tab="cardio">' + icon('pulse') + '<span>Kardiyo</span></button>' +
+      '<button class="tab-btn' + (ui.tab==='agenda'?' is-active':'') + '" data-action="set-tab" data-tab="agenda">' + icon('calendarDay') + '<span>Plan</span></button>' +
     '</div>';
   }
 
@@ -2842,10 +3181,24 @@
     if (!btn) return;
     var action = btn.getAttribute('data-action');
 
-    if (action === 'set-tab'){ ui.tab = btn.getAttribute('data-tab'); ui.period = 'day'; renderAll(); return; }
-    if (action === 'set-period'){ ui.period = btn.getAttribute('data-period'); renderAll(); return; }
-    if (action === 'month-prev'){ ui.cursor = new Date(ui.cursor.getFullYear(), ui.cursor.getMonth()-1, 1); renderAll(); return; }
-    if (action === 'month-next'){ ui.cursor = new Date(ui.cursor.getFullYear(), ui.cursor.getMonth()+1, 1); renderAll(); return; }
+    if (action === 'set-tab'){ ui.tab = btn.getAttribute('data-tab'); ui.period = 'day'; ui.cursor = new Date(); renderAll(); return; }
+    if (action === 'set-period'){
+      ui.period = btn.getAttribute('data-period');
+      if (ui.period === 'day') ui.cursor = new Date();
+      renderAll(); return;
+    }
+    if (action === 'month-prev'){
+      ui.cursor = ui.period === 'day'
+        ? new Date(ui.cursor.getFullYear(), ui.cursor.getMonth(), ui.cursor.getDate()-1)
+        : new Date(ui.cursor.getFullYear(), ui.cursor.getMonth()-1, 1);
+      renderAll(); return;
+    }
+    if (action === 'month-next'){
+      ui.cursor = ui.period === 'day'
+        ? new Date(ui.cursor.getFullYear(), ui.cursor.getMonth(), ui.cursor.getDate()+1)
+        : new Date(ui.cursor.getFullYear(), ui.cursor.getMonth()+1, 1);
+      renderAll(); return;
+    }
     if (action === 'open-day'){ ui.dayDetailKind = ui.tab; ui.dayDetailKey = btn.getAttribute('data-key'); renderAll(); return; }
     if (action === 'close-day'){ ui.dayDetailKey = null; ui.dayDetailKind = null; ui.manualAddOpen = { nutrition:false, workout:false }; renderAll(); return; }
     if (action === 'toggle-manual-add'){
@@ -2860,15 +3213,15 @@
     }
     if (action === 'open-today-detail'){
       var odTab = btn.getAttribute('data-tab');
-      ui.tab = odTab; ui.period = 'day'; ui.dayDetailKind = odTab; ui.dayDetailKey = todayKey();
+      ui.tab = odTab; ui.period = 'day'; ui.dayDetailKind = odTab; ui.dayDetailKey = keyForDate(ui.cursor);
       renderAll(); return;
     }
     if (action === 'open-home-tile'){
       var htTab = btn.getAttribute('data-tab');
       if (ui.homePeriod === 'day'){
-        ui.tab = htTab; ui.period = 'day'; ui.dayDetailKind = htTab; ui.dayDetailKey = todayKey();
+        ui.dayDetailKind = htTab; ui.dayDetailKey = todayKey();
       } else {
-        ui.tab = htTab; ui.period = ui.homePeriod;
+        ui.tab = htTab; ui.period = ui.homePeriod; ui.cursor = new Date();
       }
       renderAll(); return;
     }
@@ -2953,13 +3306,94 @@
       var exNameEl = document.getElementById('dd-ex-name');
       var exName = exNameEl.value.trim();
       if (!exName){ exNameEl.focus(); return; }
-      dayOf(ekey).exercises.push({ id:newId(), name:exName, sets:[] });
+      var newEx = { id:newId(), name:exName, sets:[] };
+      dayOf(ekey).exercises.push(newEx);
+      ui.activeExerciseId = newEx.id;
       scheduleSave(); renderAll(); return;
+    }
+    if (action === 'set-agenda-subtab'){
+      ui.agendaSubTab = btn.getAttribute('data-subtab');
+      renderAll(); return;
+    }
+    if (action === 'agenda-day-prev' || action === 'agenda-day-next'){
+      var adKey = ui.agendaKey || todayKey();
+      var adDate = parseKey(adKey);
+      adDate.setDate(adDate.getDate() + (action === 'agenda-day-prev' ? -1 : 1));
+      ui.agendaKey = keyForDate(adDate);
+      renderAll(); return;
+    }
+    if (action === 'add-agenda-item'){
+      var aaKey = btn.getAttribute('data-key');
+      var aaTimeEl = document.getElementById('ag-time'), aaTextEl = document.getElementById('ag-text');
+      var aaText = (aaTextEl && aaTextEl.value || '').trim();
+      if (!aaText){ if (aaTextEl) aaTextEl.focus(); return; }
+      var aaTime = (aaTimeEl && aaTimeEl.value || '').trim() || null;
+      dayOf(aaKey).agenda.push({ id:newId(), time:aaTime, text:aaText, done:false });
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'toggle-agenda-item'){
+      var taKey = btn.getAttribute('data-key'), taId = btn.getAttribute('data-id');
+      var taItem = dayOf(taKey).agenda.filter(function(x){ return x.id === taId; })[0];
+      if (taItem) taItem.done = !taItem.done;
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'delete-agenda-item'){
+      var daKey = btn.getAttribute('data-key'), daId = btn.getAttribute('data-id');
+      var daDay = dayOf(daKey);
+      daDay.agenda = daDay.agenda.filter(function(x){ return x.id !== daId; });
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'save-note'){
+      var snKey = btn.getAttribute('data-key');
+      var snEl = document.getElementById('note-text');
+      dayOf(snKey).note = snEl ? snEl.value : '';
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'save-steps-home'){
+      var hsEl = document.getElementById('home-steps');
+      var hsVal = num(hsEl ? hsEl.value : '', NaN);
+      dayOf(todayKey()).steps = (isFinite(hsVal) && hsVal > 0) ? Math.round(hsVal) : null;
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'set-steps-quick'){
+      var sqVal = num(btn.getAttribute('data-steps'), 0);
+      dayOf(todayKey()).steps = sqVal > 0 ? sqVal : null;
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'add-water'){
+      var awMl = num(btn.getAttribute('data-ml'), 0);
+      var awDay = dayOf(todayKey());
+      awDay.water = Math.max(0, (awDay.water || 0) + awMl);
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'reset-water'){
+      dayOf(todayKey()).water = 0;
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'activate-exercise'){
+      ui.activeExerciseId = btn.getAttribute('data-exid');
+      renderAll(); return;
+    }
+    if (action === 'start-workout-session'){
+      workoutSessionStartedAt = Date.now();
+      startSessionInterval();
+      renderAll(); return;
+    }
+    if (action === 'end-workout-session'){
+      workoutSessionStartedAt = null;
+      if (sessionIntervalId){ clearInterval(sessionIntervalId); sessionIntervalId = null; }
+      renderAll(); return;
+    }
+    if (action === 'stop-rest-timer'){
+      restTimer = null;
+      if (restTimerIntervalId){ clearInterval(restTimerIntervalId); restTimerIntervalId = null; }
+      renderAll(); return;
     }
     if (action === 'delete-exercise'){
       var dekey = btn.getAttribute('data-key'), exid = btn.getAttribute('data-exid');
       var ded = dayOf(dekey);
       ded.exercises = ded.exercises.filter(function(ex){ return ex.id !== exid; });
+      if (ui.activeExerciseId === exid) ui.activeExerciseId = null;
       scheduleSave(); renderAll(); return;
     }
     if (action === 'add-set'){
@@ -2973,6 +3407,7 @@
       var weight = num(weightEl.value, 0);
       if (!isFinite(reps) || reps <= 0){ repsEl.focus(); return; }
       ex.sets.push({ reps:reps, weight:weight });
+      startRestTimer(ex.name);
       scheduleSave(); renderAll(); return;
     }
     if (action === 'delete-set'){
@@ -3001,6 +3436,7 @@
       if (!rlEx || !rlEx.sets.length) return;
       var rlLast = rlEx.sets[rlEx.sets.length - 1];
       rlEx.sets.push({ reps: rlLast.reps, weight: rlLast.weight });
+      startRestTimer(rlEx.name);
       scheduleSave(); renderAll(); return;
     }
     if (action === 'link-account'){
@@ -3057,6 +3493,7 @@
       s.workoutGoalPerWeek = num(document.getElementById('s-wg').value, s.workoutGoalPerWeek);
       s.cardioGoalMinPerWeek = num(document.getElementById('s-cg').value, s.cardioGoalMinPerWeek);
       s.stepsGoalPerDay = num(document.getElementById('s-sg').value, s.stepsGoalPerDay);
+      s.waterGoalMl = num(document.getElementById('s-wat').value, s.waterGoalMl);
       s.weeklyWeightGoalKg = num(document.getElementById('s-wwg').value, s.weeklyWeightGoalKg);
       s.monthlyWeightGoalKg = num(document.getElementById('s-mwg').value, s.monthlyWeightGoalKg);
       ui.settingsOpen = false;
@@ -3106,8 +3543,11 @@
       var tpExisting = tpDay.exercises.filter(function(ex){ return ex.sourcePlanId === tpPlanId || ex.name.toLowerCase() === tpPlanItem.name.toLowerCase(); })[0];
       if (tpExisting){
         tpDay.exercises = tpDay.exercises.filter(function(ex){ return ex.id !== tpExisting.id; });
+        if (ui.activeExerciseId === tpExisting.id) ui.activeExerciseId = null;
       } else {
-        tpDay.exercises.push({ id:newId(), name:tpPlanItem.name, sets:[], sourcePlanId:tpPlanId });
+        var newTpEx = { id:newId(), name:tpPlanItem.name, sets:[], sourcePlanId:tpPlanId };
+        tpDay.exercises.push(newTpEx);
+        ui.activeExerciseId = newTpEx.id;
       }
       scheduleSave(); renderAll(); return;
     }
@@ -3215,7 +3655,21 @@
     }
     if (action === 'open-week-day'){
       var owdKey = btn.getAttribute('data-key');
-      ui.tab = 'workout'; ui.period = 'day'; ui.dayDetailKind = 'workout'; ui.dayDetailKey = owdKey;
+      ui.homeSelectedDayKey = (ui.homeSelectedDayKey === owdKey) ? null : owdKey;
+      renderAll(); return;
+    }
+    if (action === 'close-home-day'){
+      ui.homeSelectedDayKey = null;
+      renderAll(); return;
+    }
+    if (action === 'open-home-day-edit'){
+      var ohdKey = btn.getAttribute('data-key');
+      ui.tab = 'workout'; ui.period = 'day'; ui.dayDetailKind = 'workout'; ui.dayDetailKey = ohdKey;
+      renderAll(); return;
+    }
+    if (action === 'open-home-day-agenda'){
+      var ohaKey = btn.getAttribute('data-key');
+      ui.tab = 'agenda'; ui.agendaKey = ohaKey; ui.agendaSubTab = 'plan';
       renderAll(); return;
     }
   }

@@ -5,6 +5,19 @@ olarak yayınlanır, veriler Firebase Firestore'da gerçek zamanlı olarak sakla
 (telefonlar arası senkron + çevrimdışı çalışma desteği). Giriş ekranı yoktur;
 uygulama açılışta görünmez (anonim) bir Firebase oturumu açar.
 
+Antrenman/Beslenme/Kardiyo/Ana Sayfa'nın yanında bir de **Plan** sekmesi var:
+günlük, saat etiketli bir yapılacaklar listesi (tiklenebilir) ve o güne özel
+serbest bir not alanı — tarih ileri/geri okuyla gezilebiliyor. Antrenman
+sekmesinde set eklenince otomatik 2 dakikalık bir dinlenme sayacı beliriyor,
+"Antrenman Başlat" ile o günkü antrenman süresi de ayrıca sayılabiliyor,
+egzersiz kartları akordeon şeklinde (sadece üzerinde çalışılan açık kalıyor).
+Ana Sayfa'da hızlı su ve adım girişi için ayrı kartlar var. Uygulamanın genel
+rengi koyu + turuncu/kırmızı gradyan bir tema kullanıyor (Ayarlar'dan
+Aydınlık/Karanlık/Sistem seçilebiliyor, tema her ikisinde de aynı renk
+paletini kullanıyor). İçindeki yapay zeka asistanı Plan sekmesindeki
+ajanda/not içeriğini de görüyor ve sorulduğunda onlar hakkında cevap
+verebiliyor, gerekirse yeni madde/not da ekleyebiliyor.
+
 ## Kurulum (tek seferlik)
 
 1. `firebase-config.js` dosyasını Firebase Console > Proje Ayarları > Web
