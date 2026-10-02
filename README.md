@@ -11,10 +11,14 @@ serbest bir not alanı — tarih ileri/geri okuyla gezilebiliyor. Antrenman
 sekmesinde set eklenince otomatik 2 dakikalık bir dinlenme sayacı beliriyor,
 "Antrenman Başlat" ile o günkü antrenman süresi de ayrıca sayılabiliyor,
 egzersiz kartları akordeon şeklinde (sadece üzerinde çalışılan açık kalıyor).
-Ana Sayfa'da hızlı su ve adım girişi için ayrı kartlar var. Uygulamanın genel
-rengi koyu + turuncu/kırmızı gradyan bir tema kullanıyor (Ayarlar'dan
-Aydınlık/Karanlık/Sistem seçilebiliyor, tema her ikisinde de aynı renk
-paletini kullanıyor). İçindeki yapay zeka asistanı Plan sekmesindeki
+Ana Sayfa'da hızlı su ve adım girişi için ayrı kartlar var. Ana Sayfa'nın en
+üstünde günün/haftanın/ayın genel ilerlemesini (beslenme+antrenman+kardiyo+adım
+ortalaması) tek bakışta gösteren gradyanlı bir karşılama kartı ve ilerleme
+halkası var, altında durumuna göre değişen kısa bir motivasyon mesajı
+gösteriliyor; haftalık şeritte bugünün günü de aynı gradyanla öne çıkıyor.
+Uygulamanın genel rengi koyu + turuncu/kırmızı gradyan bir tema kullanıyor
+(Ayarlar'dan Aydınlık/Karanlık/Sistem seçilebiliyor, tema her ikisinde de aynı
+renk paletini kullanıyor). İçindeki yapay zeka asistanı Plan sekmesindeki
 ajanda/not içeriğini de görüyor ve sorulduğunda onlar hakkında cevap
 verebiliyor, gerekirse yeni madde/not da ekleyebiliyor.
 
@@ -139,10 +143,30 @@ https://celenks.github.io/Spor-Defteri/?kardiyoTip=kosu&kardiyoDk=32&kardiyoKm=5
   kaydı tekrar eklenmez, sadece adım güncellenir.
 
 Sayfa açılır açılmaz bu değerleri kaydedip adres çubuğundaki parametreleri
-temizliyor ve seni doğrudan bugünün Kardiyo ekranına götürüyor — hiçbir yeni
-hesap veya izin gerekmiyor, çünkü bu link telefonunda zaten oturum açmış olan
-tarayıcıyı (Safari) kullanıyor; başka biri bu linki kendi telefonunda açsa bile
-senin verine dokunamaz, kendi (boş) kaydına yazar.
+temizliyor ve seni doğrudan bugünün Kardiyo ekranına götürüyor.
+
+**Önemli — "hesap" ve "anahtar" parametreleri (PWA kullananlar için şart):**
+iOS, uygulamayı Ana Ekran'a ekleyip (PWA) oradan kullanırken ile Kısayol'un
+açtığı normal Safari sekmesi için **ayrı bir depolama/anonim oturum**
+kullanabiliyor. Bu durumda yukarıdaki basit `?adim=...` linki, verini Safari'nin
+kendi (boş) oturumuna yazar ve Ana Ekran'daki uygulamada hiçbir zaman görünmez —
+"adım otomatik çekilmiyor" şikayetinin asıl sebebi genelde bu. Bunu kesin olarak
+çözmek için linke hesabını tanımlayan iki parametre daha eklenmeli:
+
+```
+https://celenks.github.io/Spor-Defteri/?adim=8412&hesap=UID&anahtar=OTURUM_ANAHTARI
+```
+
+`UID` ve `OTURUM_ANAHTARI` değerlerini **Ayarlar > Kısayol (Otomasyon)
+Bağlantısı** bölümünden kopyalayabilirsin — en alttaki "Örnek tam adres" alanı
+zaten `adim=8000` ile hazır bir şablon veriyor, sadece `8000` kısmını Kısayol'daki
+adım değişkeniyle değiştirmen yeterli. Bu iki parametre verildiğinde uygulama o
+anki tarayıcı oturumunu hiç kullanmıyor; doğrudan Firestore'a, hesabına özel
+olarak yazıyor — hangi bağlamda açılırsa açılsın (Safari, PWA, başka bir cihaz)
+veri her zaman doğru yere gider. Sayfa da normal arayüz yerine sadece kısa bir
+"Kaydedildi ✓" onayı gösterip kapanmaya hazır hale gelir. `hesap`/`anahtar`
+olmadan sadece `adim` ile açarsan eski (tarayıcı oturumuna bağlı) yöntem
+çalışmaya devam eder — ama PWA kullanıyorsan önerilmez.
 
 **iPhone'da tek dokunuşluk Kısayol kurmak için:**
 
@@ -152,8 +176,9 @@ senin verine dokunamaz, kendi (boş) kaydına yazar.
    getiren bir eylem ekle (ör. "Sağlık Örneklerini Bul" / "Find Health Samples" →
    Tür: Adımlar, Başlangıç: Bugün — birden fazla örnek gelirse aralarına bir
    "İstatistik Hesapla" / "Calculate Statistics" → Toplam adımı ekle).
-3. "Metin" (Text) eylemiyle şu adresi oluştur (adım sayısı değişkenini sona ekle):
-   `https://celenks.github.io/Spor-Defteri/?adim=` + [adım sayısı]
+3. "Metin" (Text) eylemiyle şu adresi oluştur (adım sayısı değişkenini uygun yere
+   ekleyerek — Ayarlar'daki örnek adresi kopyalayıp üzerine yazman en kolayı):
+   `https://celenks.github.io/Spor-Defteri/?adim=` + [adım sayısı] + `&hesap=UID&anahtar=OTURUM_ANAHTARI`
 4. "URL'leri Aç" (Open URLs) eylemiyle bu metni aç.
 5. (İstersen kardiyo için) "Sağlık Örneklerini Bul" yerine "Antrenmanları Bul" /
    "Find Workouts" → Başlangıç: Bugün ekleyip Süre/Mesafe/Toplam Enerji alanlarını
@@ -162,7 +187,9 @@ senin verine dokunamaz, kendi (boş) kaydına yazar.
    metne `&kardiyoTip=...&kardiyoDk=...&kardiyoKm=...&kardiyoKcal=...&kardiyoId=...`
    ekle (kardiyoId için antrenmanın başlangıç tarihini/saatini kullanabilirsin).
 6. Kısayolu Ana Ekran'a ekle (Kısayolun paylaş/ayarlar menüsünden "Ana Ekrana Ekle")
-   veya Otomasyonlar'dan "her gün saat X'te" otomatik çalışacak şekilde ayarla.
+   veya Otomasyonlar'dan "her gün saat X'te" otomatik çalışacak şekilde ayarla —
+   "Çalıştırmadan Önce Sor" (Ask Before Running) kapalı olmalı, yoksa otomasyon
+   bildirim olarak bekler ve sen dokunmazsan hiç çalışmaz.
 
 Tam menü/eylem adları iOS sürümüne göre küçük farklılıklar gösterebilir; takılırsan
 ekran görüntüsü at, birlikte ilerleriz. Huawei Health için bu yöntemin bir eşdeğeri

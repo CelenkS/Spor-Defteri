@@ -326,6 +326,11 @@
   .check-row-name.is-done-text{ text-decoration:line-through; }
   .check-row-sub{ font-size:11.5px; color:var(--text-faint); margin-top:2px; }
 
+  .note-row{ display:flex; align-items:flex-start; gap:12px; padding:12px 13px; border-bottom:1px solid var(--border); }
+  .note-row:last-child{ border-bottom:none; }
+  .note-bullet{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; margin-top:7px; }
+  .note-row-text{ flex:1; min-width:0; font-size:14px; line-height:1.45; white-space:pre-wrap; word-break:break-word; padding-top:1px; }
+
   /* ---------- açılır manuel giriş ---------- */
   details.manual-add{ margin-top:14px; }
   details.manual-add summary{
@@ -406,6 +411,31 @@
   .week-strip-dots{ display:flex; gap:2.5px; min-height:5px; align-items:center; }
   .week-strip-dot{ width:5px; height:5px; border-radius:50%; }
   .week-strip-cell.is-selected{ box-shadow:0 0 0 2px var(--text) inset, var(--shadow); }
+  .week-strip-cell.is-today{ background:linear-gradient(135deg, var(--accent), var(--accent2) 130%) !important; color:#fff !important; box-shadow:var(--shadow); border-color:transparent; }
+  .week-strip-cell.is-today .week-strip-wd{ opacity:.85; }
+  .week-strip-cell.is-today .week-strip-num{ color:#fff; }
+  .week-strip-cell.is-today.is-selected{ box-shadow:0 0 0 2px var(--text) inset, var(--shadow); }
+
+  /* ---------- ana sayfa hero (karşılama + genel ilerleme halkası) ---------- */
+  .home-hero{ margin:10px 0 4px; animation:home-hero-in .45s cubic-bezier(.2,.7,.3,1) both; }
+  @media (prefers-reduced-motion: reduce){ .home-hero{ animation:none; } }
+  @keyframes home-hero-in{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  .home-hero-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; position:relative; }
+  .home-hero-greet{ font-family:'Sora',sans-serif; font-weight:800; font-size:21px; letter-spacing:-.3px; display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+  .home-hero-date{ font-size:12px; opacity:.88; margin-top:3px; font-weight:500; }
+  .streak-badge.on-hero{ background:rgba(255,255,255,.24); color:#fff; }
+  .home-ring{ position:relative; width:58px; height:58px; flex:none; }
+  .home-ring svg{ width:58px; height:58px; transform:rotate(-90deg); display:block; }
+  .home-ring circle{ fill:none; stroke-width:5.5; }
+  .home-ring .ring-track{ stroke:rgba(255,255,255,.25); }
+  .home-ring .ring-fill{ stroke:#fff; stroke-linecap:round; transition:stroke-dashoffset .5s ease; }
+  .home-ring-val{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-weight:800; font-size:13.5px; }
+  .home-hero-msg{ font-size:12.5px; font-weight:600; opacity:.95; margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.18); display:flex; align-items:center; gap:6px; position:relative; }
+  .home-hero-msg svg{ width:14px; height:14px; flex:none; }
+
+  .home-tile{ transition:transform .12s ease; }
+  .home-tile:active{ transform:scale(.96); }
+  .stat-card{ transition:transform .12s ease; }
 
   .day-sum-card{ margin-top:10px; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:15px; box-shadow:var(--shadow); }
   .day-sum-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
@@ -613,6 +643,160 @@
     }
     try { history.replaceState(null, '', location.pathname + location.hash); } catch(e2){}
     return changed;
+  }
+
+  /* ---------- Sağlık içe aktarmayı doğrudan hedef hesaba yazma ----------
+     iOS, ana ekrana eklenen bir PWA ile normal Safari sekmesi için bazen AYRI bir depolama/anonim
+     oturum kullanır — bu yüzden yukarıdaki applyHealthImportFromUrl() (hangi tarayıcı oturumu
+     açıksa onu kullanır) Kısayol Safari'de açıldığında ama uygulama ana ekrandan kullanıldığında
+     veriyi YANLIŞ (boş) bir hesaba yazabilir. Bunu kesin çözmek için: URL'e adım/kardiyo
+     parametrelerinin yanında hesap (uid) ve anahtar (refresh token) eklenirse (Ayarlar > Kısayol
+     (Otomasyon) Bağlantısı'ndan kopyalanır), bu değerler mevcut tarayıcı oturumundan TAMAMEN
+     bağımsız olarak, Firestore REST API üzerinden doğrudan doğru hesaba yazılır. */
+  function fsEncodeVal(v){
+    if (v === null || v === undefined) return { nullValue: null };
+    if (typeof v === 'number') return (isFinite(v) && Math.floor(v) === v) ? { integerValue: String(v) } : { doubleValue: v };
+    if (typeof v === 'boolean') return { booleanValue: v };
+    if (typeof v === 'string') return { stringValue: v };
+    if (Array.isArray(v)) return { arrayValue: { values: v.map(fsEncodeVal) } };
+    var fields = {};
+    Object.keys(v).forEach(function(k){ fields[k] = fsEncodeVal(v[k]); });
+    return { mapValue: { fields: fields } };
+  }
+  function fsDecodeVal(v){
+    if (!v) return null;
+    if ('integerValue' in v) return Number(v.integerValue);
+    if ('doubleValue' in v) return v.doubleValue;
+    if ('stringValue' in v) return v.stringValue;
+    if ('booleanValue' in v) return v.booleanValue;
+    if ('nullValue' in v) return null;
+    if (v.arrayValue) return (v.arrayValue.values || []).map(fsDecodeVal);
+    if (v.mapValue){
+      var out = {};
+      var f = v.mapValue.fields || {};
+      Object.keys(f).forEach(function(k){ out[k] = fsDecodeVal(f[k]); });
+      return out;
+    }
+    return null;
+  }
+  function fsPathSeg(seg){
+    return /^[A-Za-z_][A-Za-z0-9_]*$/.test(seg) ? seg : ('`' + String(seg).replace(/`/g,'\\`') + '`');
+  }
+
+  function detectAccountHealthImportParams(){
+    var params;
+    try { params = new URLSearchParams(location.search); } catch(e){ return null; }
+    var acctUid = params.get('hesap'), acctToken = params.get('anahtar');
+    if (!acctUid || !acctToken) return null;
+    var stepsParam = params.get('adim');
+    var cTip = params.get('kardiyoTip'), cDk = params.get('kardiyoDk');
+    if (!stepsParam && !(cTip && cDk)) return null;
+    return {
+      uid: acctUid, token: acctToken, adim: stepsParam,
+      kardiyoTip: cTip, kardiyoDk: cDk,
+      kardiyoKm: params.get('kardiyoKm'), kardiyoKcal: params.get('kardiyoKcal'), kardiyoId: params.get('kardiyoId')
+    };
+  }
+
+  function renderAccountImportStatus(st, detail){
+    var root = document.getElementById('root');
+    if (!root) return;
+    var iconName = st==='ok' ? 'check' : st==='err' ? 'close' : 'timer';
+    var title = st==='ok' ? 'Kaydedildi' : st==='err' ? 'Kaydedilemedi' : 'Kaydediliyor…';
+    var bg = st==='ok' ? 'var(--protein-soft)' : st==='err' ? 'var(--push-soft)' : 'var(--accent-soft)';
+    var fg = st==='ok' ? 'var(--protein)' : st==='err' ? 'var(--push)' : 'var(--accent)';
+    root.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:var(--bg);color:var(--text)">' +
+      '<div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:' + bg + ';color:' + fg + '">' + icon(iconName) + '</div>' +
+      '<div style="font-family:\'Sora\',sans-serif;font-weight:800;font-size:18px">' + esc(title) + '</div>' +
+      (detail ? '<div style="font-size:13px;color:var(--text-faint);max-width:280px">' + esc(detail) + '</div>' : '') +
+      '<div style="font-size:11px;color:var(--text-faint);margin-top:6px">Spor Defteri</div>' +
+    '</div>';
+  }
+
+  async function runAccountHealthImport(p){
+    renderAccountImportStatus('busy', '');
+    try {
+      var apiKey = (window.firebaseConfig && window.firebaseConfig.apiKey) || '';
+      var projectId = (window.firebaseConfig && window.firebaseConfig.projectId) || '';
+      if (!apiKey || !projectId) throw new Error('Firebase yapılandırması eksik.');
+
+      var tokRes = await fetch('https://securetoken.googleapis.com/v1/token?key=' + encodeURIComponent(apiKey), {
+        method:'POST',
+        headers:{ 'content-type':'application/x-www-form-urlencoded' },
+        body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(p.token)
+      });
+      if (!tokRes.ok) throw new Error('Oturum anahtarı geçersiz veya süresi dolmuş.');
+      var tokData = await tokRes.json();
+      var idToken = tokData.id_token, realUid = tokData.user_id;
+      if (!idToken || !realUid || realUid !== p.uid) throw new Error('Hesap doğrulanamadı.');
+
+      var key = todayKey();
+      var seg = fsPathSeg(key);
+      var docUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(projectId) + '/databases/(default)/documents/sporDefteri/' + encodeURIComponent(realUid);
+
+      var fieldPaths = [];
+      var dayFields = {};
+      var summaryParts = [];
+
+      if (p.adim !== null && p.adim !== ''){
+        var stepsNum = num(p.adim, null);
+        if (stepsNum !== null && isFinite(stepsNum) && stepsNum >= 0){
+          dayFields.steps = Math.round(stepsNum);
+          fieldPaths.push('days.' + seg + '.steps');
+          summaryParts.push(dayFields.steps.toLocaleString('tr-TR') + ' adım');
+        }
+      }
+
+      if (p.kardiyoTip && p.kardiyoDk){
+        var durationMin = num(p.kardiyoDk, 0);
+        if (durationMin > 0){
+          var getRes = await fetch(docUrl + '?mask.fieldPaths=' + encodeURIComponent('days.' + seg + '.cardio'), {
+            headers:{ 'Authorization':'Bearer ' + idToken }
+          });
+          var existingCardio = [];
+          if (getRes.ok){
+            var getData = await getRes.json();
+            var daysVal = getData.fields && getData.fields.days;
+            var dayVal = daysVal && daysVal.mapValue && daysVal.mapValue.fields && daysVal.mapValue.fields[key];
+            var cardioVal = dayVal && dayVal.mapValue && dayVal.mapValue.fields && dayVal.mapValue.fields.cardio;
+            existingCardio = cardioVal ? (fsDecodeVal(cardioVal) || []) : [];
+          } else if (getRes.status !== 404){
+            throw new Error('Mevcut kardiyo verisi okunamadı.');
+          }
+          var alreadyImported = p.kardiyoId && existingCardio.some(function(c){ return c.importId === p.kardiyoId; });
+          if (!alreadyImported){
+            var typeKey = mapHealthCardioType(p.kardiyoTip);
+            var distanceKm = (p.kardiyoKm !== null && p.kardiyoKm !== '') ? num(p.kardiyoKm, null) : null;
+            var calories = (p.kardiyoKcal !== null && p.kardiyoKcal !== '' && num(p.kardiyoKcal,0) > 0) ? Math.round(num(p.kardiyoKcal)) : cardioCalories(typeKey, durationMin, distanceKm);
+            existingCardio.push({ id:newId(), type:typeKey, durationMin:durationMin, distanceKm:distanceKm, calories:calories, importId: p.kardiyoId || null });
+            dayFields.cardio = existingCardio;
+            fieldPaths.push('days.' + seg + '.cardio');
+            summaryParts.push(durationMin + ' dk kardiyo');
+          }
+        }
+      }
+
+      if (!fieldPaths.length){
+        renderAccountImportStatus('ok', 'Zaten güncel, eklenecek yeni bir şey yok.');
+      } else {
+        var body = { fields: { days: { mapValue: { fields: {} } } } };
+        body.fields.days.mapValue.fields[key] = { mapValue: { fields: {} } };
+        Object.keys(dayFields).forEach(function(k){
+          body.fields.days.mapValue.fields[key].mapValue.fields[k] = fsEncodeVal(dayFields[k]);
+        });
+        var maskQuery = fieldPaths.map(function(fp){ return 'updateMask.fieldPaths=' + encodeURIComponent(fp); }).join('&');
+        var patchRes = await fetch(docUrl + '?' + maskQuery, {
+          method:'PATCH',
+          headers:{ 'content-type':'application/json', 'Authorization':'Bearer ' + idToken },
+          body: JSON.stringify(body)
+        });
+        if (!patchRes.ok) throw new Error('Firestore yazma hatası (' + patchRes.status + ')');
+        renderAccountImportStatus('ok', summaryParts.join(' · '));
+      }
+    } catch (err){
+      renderAccountImportStatus('err', (err && err.message) || 'Beklenmeyen bir hata oluştu.');
+    }
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch(e2){}
   }
 
   /* ---------- hareket -> bölge eşleşmesi ---------- */
@@ -829,7 +1013,7 @@
       days:{}
     };
   }
-  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null, water:0, agenda:[], note:'' }; }
+  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null, water:0, agenda:[], notes:[] }; }
   function normalizeState(s){
     var d = defaultState();
     if (!s || typeof s !== 'object') return d;
@@ -859,7 +1043,14 @@
         agenda: Array.isArray(day.agenda) ? day.agenda.map(function(it){
           return { id: it.id || newId(), time: (typeof it.time === 'string') ? it.time : null, text: (typeof it.text === 'string') ? it.text : '', done: !!it.done };
         }) : [],
-        note: (typeof day.note === 'string') ? day.note : ''
+        /* notes: ayrı kısa not maddelerinden oluşan liste. Eski sürümlerde tek bir serbest metin
+           alanıydı (day.note) — notes dizisi yoksa o eski metni tek maddelik bir listeye taşıyoruz,
+           böylece önceden girilmiş notlar kaybolmuyor. */
+        notes: Array.isArray(day.notes) ? day.notes.map(function(it){
+          return { id: it.id || newId(), text: (typeof it.text === 'string') ? it.text : '' };
+        }).filter(function(it){ return it.text; }) : (
+          (typeof day.note === 'string' && day.note.trim()) ? [{ id:newId(), text: day.note.trim() }] : []
+        )
       };
     });
     return out;
@@ -1098,8 +1289,8 @@
       }
     },
     {
-      name: 'save_note',
-      description: 'Belirtilen günün Plan sekmesindeki notunu ayarlar (o günkü mevcut notun tamamen yerine geçer).',
+      name: 'add_note_item',
+      description: 'Belirtilen günün Plan sekmesindeki Notlar listesine kısa, ayrı bir not maddesi ekler (mevcut notları silmez, üzerine yenisini ekler).',
       input_schema: {
         type:'object',
         properties:{
@@ -1179,11 +1370,13 @@
         scheduleSave(); renderAll();
         return { ok:true, message: aaKey + ' ajandasına "' + aaText + '" eklendi.' };
       }
-      if (name === 'save_note'){
+      if (name === 'add_note_item'){
         var snKey = aiResolveDateKey(input.date);
-        dayOf(snKey).note = String(input.text||'');
+        var snText = String(input.text||'').trim();
+        if (!snText) return { ok:false, message:'Not metni gerekli.' };
+        dayOf(snKey).notes.push({ id:newId(), text:snText });
         scheduleSave(); renderAll();
-        return { ok:true, message: snKey + ' notu kaydedildi.' };
+        return { ok:true, message: snKey + ' gününe not eklendi: "' + snText + '"' };
       }
       return { ok:false, message:'Bilinmeyen işlem: ' + name };
     } catch(errTool){
@@ -1216,7 +1409,8 @@
       'Türkçe, kısa ve samimi cevap ver, gereksiz uzatma. Kullanıcının güncel verisi (JSON) aşağıda; analitik sorularını ' +
       '(örn. "bu hafta kaç antrenman yaptım", "ortalama proteinim ne") doğrudan bu veriden hesaplayıp cevapla. ' +
       '"gunler" altındaki her günün nesnesinde "agenda" (Plan sekmesindeki günlük yapılacaklar listesi - her madde ' +
-      '{time, text, done}) ve "note" (o güne özel, Plan sekmesindeki Notlar\'a yazılmış serbest metin not) alanları da var; ' +
+      '{time, text, done}) ve "notes" (o güne özel, Plan sekmesindeki Notlar\'a eklenmiş kısa not maddelerinin listesi - ' +
+      'her madde {text}) alanları da var; ' +
       'kullanıcı planıyla/ajandasıyla veya notlarıyla ilgili bir şey sorarsa (örn. "bugün ne yapacaktım", "dün not almış mıydım") ' +
       'bu alanlardan cevap ver. ' +
       'Kullanıcı veri eklemeni/değiştirmeni isterse uygun aracı çağır; tarih belirtmezse bugünü (' + todayKey + ') kullan, ' +
@@ -1790,9 +1984,7 @@
     var tKey = todayKey();
 
     var gami = computeGamification();
-    var streakBadge = gami.streak > 0 ? ('<span class="streak-badge">' + icon('flame') + gami.streak + ' gün seri</span>') : '';
-
-    var html = '<div class="home-greet"><div class="home-greet-label">' + greeting + streakBadge + '</div><div class="home-greet-date">' + dateLabel + '</div></div>';
+    var streakBadge = gami.streak > 0 ? ('<span class="streak-badge on-hero">' + icon('flame') + gami.streak + ' gün seri</span>') : '';
 
     var hp = ui.homePeriod;
     var hpLabel = hp==='day' ? 'Bugün' : hp==='week' ? 'Bu Hafta' : 'Bu Ay';
@@ -1808,26 +2000,55 @@
     var scopeStepsPct = scopeStepsGoal>0 ? (scopeSteps.steps/scopeStepsGoal)*100 : 0;
     var scopeBurned = scopeCardio.calories + scopeSteps.calories;
 
+    var wS = dayWorkoutSummary(today);
+    var wTi = typeInfo(wS.type);
+    var workoutPct, scopeWorkoutDone, scopeWorkoutGoal;
+    if (hp === 'day'){
+      workoutPct = wS.type==='rest' ? null : (wS.done?100:0);
+    } else {
+      scopeWorkoutDone = 0; scopeDays.forEach(function(d){ if (dayWorkoutSummary(d).done) scopeWorkoutDone++; });
+      scopeWorkoutGoal = hp==='week' ? (s.workoutGoalPerWeek||1) : Math.round((s.workoutGoalPerWeek||1) * (scopeDays.length/7)) || 1;
+      workoutPct = (scopeWorkoutDone/scopeWorkoutGoal)*100;
+    }
+
+    /* genel ilerleme halkası: beslenme/antrenman/kardiyo/adım yüzdelerinin ortalaması */
+    var ringParts = [scopeCalPct, workoutPct, scopeCardioPct, scopeStepsPct].filter(function(v){ return v!==null && v!==undefined && isFinite(v); });
+    var ringPct = ringParts.length ? Math.max(0, Math.min(100, ringParts.reduce(function(a,b){ return a + Math.max(0,Math.min(100,b)); }, 0) / ringParts.length)) : 0;
+    var ringR = 26, ringC = 2*Math.PI*ringR;
+    var heroMsg;
+    if (ringPct <= 0) heroMsg = hp==='day' ? 'Güne başlamaya hazır mısın?' : hpLabel + ' için henüz kayıt yok, hadi başlayalım';
+    else if (ringPct < 25) heroMsg = 'İyi başlangıç, devamını getir';
+    else if (ringPct < 60) heroMsg = 'Gidişat iyi, böyle devam';
+    else if (ringPct < 90) heroMsg = 'Harika gidiyorsun, hedefe yakınsın';
+    else heroMsg = (hp==='day' ? 'Bugün harikasın! 🔥' : 'Bu ' + (hp==='week'?'hafta':'ay') + ' harikasın! 🔥');
+
+    var html = '<div class="hero-card home-hero">' + heroWatermark('flame') +
+      '<div class="home-hero-top">' +
+        '<div><div class="home-hero-greet">' + greeting + streakBadge + '</div><div class="home-hero-date">' + dateLabel + '</div></div>' +
+        '<div class="home-ring"><svg viewBox="0 0 58 58">' +
+          '<circle class="ring-track" cx="29" cy="29" r="' + ringR + '"></circle>' +
+          '<circle class="ring-fill" cx="29" cy="29" r="' + ringR + '" stroke-dasharray="' + ringC.toFixed(1) + '" stroke-dashoffset="' + (ringC * (1 - ringPct/100)).toFixed(1) + '"></circle>' +
+        '</svg><div class="home-ring-val">%' + round(ringPct) + '</div></div>' +
+      '</div>' +
+      '<div class="home-hero-msg">' + icon('flame') + esc(heroMsg) + '</div>' +
+    '</div>';
+
     html += '<div class="period-toggle" style="margin:10px 0 4px">' + [{key:'day',label:'Gün'},{key:'week',label:'Hafta'},{key:'month',label:'Ay'}].map(function(p){
       return '<button class="period-btn' + (hp===p.key?' is-active':'') + '" data-action="set-home-period" data-period="' + p.key + '">' + p.label + '</button>';
     }).join('') + '</div>';
 
     html += '<div class="section-title">' + hpLabel + '</div>';
     if (hp === 'day'){
-      var wS = dayWorkoutSummary(today);
-      var wTi = typeInfo(wS.type);
       html += '<div class="home-tile-grid">' +
         homeTile('nutrition', 'food', 'Beslenme', scopeNut.cal.toLocaleString('tr-TR') + ' kcal', '%' + round(scopeCalPct) + ' hedef', scopeCalPct, '--cal', '--cal-soft') +
-        homeTile('workout', 'dumbbell', 'Antrenman', wTi.label, wS.type==='rest' ? 'Dinlenme' : (wS.done ? 'Tamamlandı ✓' : 'Bekliyor'), wS.type==='rest' ? null : (wS.done?100:0), wTi.colorVar, wTi.softVar) +
+        homeTile('workout', 'dumbbell', 'Antrenman', wTi.label, wS.type==='rest' ? 'Dinlenme' : (wS.done ? 'Tamamlandı ✓' : 'Bekliyor'), workoutPct, wTi.colorVar, wTi.softVar) +
         homeTile('cardio', 'pulse', 'Kardiyo', scopeCardio.durationMin + ' dk', scopeCardio.count + ' kayıt', scopeCardioPct, '--accent', '--accent-soft') +
         homeTile('cardio', 'footprints', 'Adım', scopeSteps.steps.toLocaleString('tr-TR'), scopeSteps.steps>0 ? ('≈' + scopeSteps.calories + ' kcal') : 'Gir', scopeStepsPct, '--legs', '--legs-soft') +
       '</div>';
     } else {
-      var scopeWorkoutDone = 0; scopeDays.forEach(function(d){ if (dayWorkoutSummary(d).done) scopeWorkoutDone++; });
-      var scopeWorkoutGoal = hp==='week' ? (s.workoutGoalPerWeek||1) : Math.round((s.workoutGoalPerWeek||1) * (scopeDays.length/7)) || 1;
       html += '<div class="home-tile-grid">' +
         homeTile('nutrition', 'food', 'Beslenme', scopeNut.cal.toLocaleString('tr-TR') + ' kcal', '%' + round(scopeCalPct) + ' hedef', scopeCalPct, '--cal', '--cal-soft') +
-        homeTile('workout', 'dumbbell', 'Antrenman', scopeWorkoutDone + ' gün', scopeWorkoutDone + ' / ' + scopeWorkoutGoal + ' hedef', (scopeWorkoutDone/scopeWorkoutGoal)*100, '--pull', '--pull-soft') +
+        homeTile('workout', 'dumbbell', 'Antrenman', scopeWorkoutDone + ' gün', scopeWorkoutDone + ' / ' + scopeWorkoutGoal + ' hedef', workoutPct, '--pull', '--pull-soft') +
         homeTile('cardio', 'pulse', 'Kardiyo', scopeCardio.durationMin + ' dk', scopeCardio.count + ' kayıt', scopeCardioPct, '--accent', '--accent-soft') +
         homeTile('cardio', 'footprints', 'Adım', scopeSteps.steps.toLocaleString('tr-TR'), scopeSteps.steps>0 ? ('≈' + scopeSteps.calories + ' kcal') : 'Gir', scopeStepsPct, '--legs', '--legs-soft') +
       '</div>';
@@ -1971,7 +2192,7 @@
         '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--carb-soft);color:var(--carb)">' + icon('droplet') + '</div>' +
           '<div><div class="day-sum-item-label">Su</div><div class="day-sum-item-val">' + (d.water ? d.water.toLocaleString('tr-TR') + ' ml' : '—') + '</div></div></div>' +
         '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--surface-2);color:var(--text-dim)">' + icon('note') + '</div>' +
-          '<div><div class="day-sum-item-label">Not & Ajanda</div><div class="day-sum-item-val">' + (d.agenda.length ? (d.agenda.filter(function(a){return a.done;}).length + '/' + d.agenda.length + ' tamam') : (d.note ? 'Not var' : '—')) + '</div></div></div>' +
+          '<div><div class="day-sum-item-label">Not & Ajanda</div><div class="day-sum-item-val">' + (d.agenda.length ? (d.agenda.filter(function(a){return a.done;}).length + '/' + d.agenda.length + ' tamam') : ((d.notes&&d.notes.length) ? (d.notes.length + ' not') : '—')) + '</div></div></div>' +
       '</div>' +
       '<div class="day-sum-foot">' +
         '<button type="button" class="btn btn-ghost btn-sm" data-action="open-home-day-agenda" data-key="' + key + '">' + icon('calendarDay') + ' Plan/Not</button>' +
@@ -2811,11 +3032,24 @@
 
   function renderNotesSection(key){
     var d = dayOf(key);
-    return '<div class="section-title">Not</div>' +
-      '<div class="form">' +
-        '<textarea id="note-text" rows="9" placeholder="Bugünle ilgili notların..." style="width:100%;resize:vertical;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:14px">' + esc(d.note||'') + '</textarea>' +
-        '<button type="button" class="btn btn-primary btn-block" style="margin-top:10px" data-action="save-note" data-key="' + key + '">' + icon('check') + ' Kaydet</button>' +
-      '</div>';
+    var items = d.notes || [];
+    var html = '<div class="section-title">Notlar</div>';
+    if (!items.length){
+      html += '<div class="empty-state">Bu gün için henüz not yok.</div>';
+    } else {
+      html += '<div class="check-list">' + items.map(function(it){
+        return '<div class="note-row">' +
+          '<span class="note-bullet"></span>' +
+          '<div class="note-row-text">' + esc(it.text) + '</div>' +
+          '<button class="del-btn" data-action="delete-note-item" data-key="' + key + '" data-id="' + it.id + '">' + icon('trash') + '</button>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="form" style="margin-top:14px">' +
+      '<div class="field"><label>Yeni not</label><input id="note-text" type="text" placeholder="Örn. Otel rezervasyonu yap"></div>' +
+      '<button type="button" class="btn btn-primary btn-block" data-action="add-note-item" data-key="' + key + '">' + icon('plus') + ' Ekle</button>' +
+    '</div>';
+    return html;
   }
 
   /* ---------- ayarlar & plan modalları ---------- */
@@ -2912,7 +3146,7 @@
       body = '<div class="hint" style="padding:0 2px 8px">Bu bilgi için internete bağlanıp oturumun açılmasını bekle.</div>';
     } else {
       var tok = curUser.refreshToken || '';
-      body = '<div class="hint" style="padding:0 2px 8px">iPhone Kısayollar\'da otomatik adım/kardiyo yazmak için bu ikisini kullanacaksın — kimseyle paylaşma, senin verilerine tam erişim sağlıyor.</div>' +
+      body = '<div class="hint" style="padding:0 2px 8px">iPhone Kısayollar\'da otomatik adım/kardiyo yazmak için bu ikisini kullanacaksın — kimseyle paylaşma, senin verilerine tam erişim sağlıyor. <b>Önemli:</b> uygulamayı ana ekrana eklediysen (PWA), bu değerleri Kısayol\'daki adrese <code>&amp;hesap=UID&amp;anahtar=OTURUM_ANAHTARI</code> olarak eklemen gerekiyor — yoksa Kısayol Safari\'nin kendi (boş) oturumuna yazabilir ve adım/kardiyo ana ekrandaki uygulamada görünmez.</div>' +
         '<div class="field"><label>Kullanıcı Kimliği (uid)</label><div class="steps-input-row">' +
           '<input type="text" readonly value="' + esc(uid) + '" id="sc-uid">' +
           '<button type="button" class="btn btn-ghost btn-sm" data-action="copy-field" data-target="sc-uid">Kopyala</button>' +
@@ -2920,6 +3154,10 @@
         '<div class="field"><label>Oturum Anahtarı (refresh token)</label><div class="steps-input-row">' +
           '<input type="text" readonly value="' + esc(tok) + '" id="sc-token">' +
           '<button type="button" class="btn btn-ghost btn-sm" data-action="copy-field" data-target="sc-token">Kopyala</button>' +
+        '</div></div>' +
+        '<div class="field"><label>Örnek tam adres (adım için)</label><div class="steps-input-row">' +
+          '<input type="text" readonly value="' + esc(location.origin + location.pathname + '?adim=8000&hesap=' + uid + '&anahtar=' + tok) + '" id="sc-example">' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-action="copy-field" data-target="sc-example">Kopyala</button>' +
         '</div></div>';
     }
     return '<div class="section-title" style="margin-top:22px">Kısayol (Otomasyon) Bağlantısı</div><div class="form">' + body + '</div>';
@@ -3343,10 +3581,18 @@
       daDay.agenda = daDay.agenda.filter(function(x){ return x.id !== daId; });
       scheduleSave(); renderAll(); return;
     }
-    if (action === 'save-note'){
-      var snKey = btn.getAttribute('data-key');
-      var snEl = document.getElementById('note-text');
-      dayOf(snKey).note = snEl ? snEl.value : '';
+    if (action === 'add-note-item'){
+      var anKey = btn.getAttribute('data-key');
+      var anEl = document.getElementById('note-text');
+      var anText = (anEl && anEl.value || '').trim();
+      if (!anText){ if (anEl) anEl.focus(); return; }
+      dayOf(anKey).notes.push({ id:newId(), text:anText });
+      scheduleSave(); renderAll(); return;
+    }
+    if (action === 'delete-note-item'){
+      var dnKey = btn.getAttribute('data-key'), dnId = btn.getAttribute('data-id');
+      var dnDay = dayOf(dnKey);
+      dnDay.notes = dnDay.notes.filter(function(x){ return x.id !== dnId; });
       scheduleSave(); renderAll(); return;
     }
     if (action === 'save-steps-home'){
@@ -3675,14 +3921,20 @@
   }
 
   /* ---------- başlat ---------- */
-  renderAll();
-  initFirebase();
-  setTimeout(function(){
-    if (!healthImportApplied){
-      healthImportApplied = true;
-      if (applyHealthImportFromUrl()) renderAll();
-    }
-  }, 2500);
+  var acctImportParams = detectAccountHealthImportParams();
+  if (acctImportParams){
+    /* hesap+anahtar parametreleri varsa: normal uygulamayı hiç açmadan, doğrudan hedef hesaba yaz */
+    runAccountHealthImport(acctImportParams);
+  } else {
+    renderAll();
+    initFirebase();
+    setTimeout(function(){
+      if (!healthImportApplied){
+        healthImportApplied = true;
+        if (applyHealthImportFromUrl()) renderAll();
+      }
+    }, 2500);
+  }
 })();
 </script>
 <script>
