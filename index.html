@@ -28,6 +28,7 @@
     --legs:#7C5CC9; --legs-soft:#E9E2F8;
     --upper:#C4791E; --upper-soft:#F5E5D2;
     --rest:#9C8E85; --rest-soft:#ECE7E3;
+    --sleep:#3D5A99; --sleep-soft:#E1E6F5;
     --good:#1E9E5C; --bad:#D8503B;
     --shadow: 0 1px 2px rgba(26,19,16,.06), 0 8px 20px -12px rgba(26,19,16,.15);
   }
@@ -46,6 +47,7 @@
       --legs:#B79BF0; --legs-soft:#211C33;
       --upper:#F0AE5C; --upper-soft:#2C2213;
       --rest:#8C7468; --rest-soft:#2A1E19;
+      --sleep:#7C94DB; --sleep-soft:#1B2338;
       --good:#4EDB8D; --bad:#FF7A66;
       --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
     }
@@ -64,6 +66,7 @@
     --legs:#B79BF0; --legs-soft:#211C33;
     --upper:#F0AE5C; --upper-soft:#2C2213;
     --rest:#8C7468; --rest-soft:#2A1E19;
+    --sleep:#7C94DB; --sleep-soft:#1B2338;
     --good:#4EDB8D; --bad:#FF7A66;
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
   }
@@ -302,6 +305,8 @@
   .quick-add-chip{ white-space:nowrap; display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface-3); font-size:12.5px; font-weight:600; color:var(--text); }
   .quick-add-chip.is-active{ background:var(--accent-soft); color:var(--accent); border-color:var(--accent); }
   .region-tag{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; color:var(--text-faint); }
+  .mini-ico{ display:inline-flex; vertical-align:-2px; }
+  .mini-ico svg{ width:13px; height:13px; }
   .region-stats-row{ padding:10px 4px 4px; font-size:12.5px; color:var(--text-dim); }
   .region-stats-row b{ color:var(--text); }
 
@@ -326,6 +331,17 @@
   .check-row-name.is-done-text{ text-decoration:line-through; }
   .check-row-sub{ font-size:11.5px; color:var(--text-faint); margin-top:2px; }
 
+  .daily-tasks-card{ margin-bottom:2px; }
+  .daily-tasks-progress{ display:flex; align-items:center; justify-content:space-between; padding:2px 2px 8px; }
+  .daily-tasks-progress-label{ font-size:12px; color:var(--text-faint); font-weight:600; }
+  .daily-tasks-progress-track{ flex:1; height:6px; border-radius:99px; background:var(--surface-2); margin:0 10px; overflow:hidden; }
+  .daily-tasks-progress-fill{ height:100%; background:var(--accent); border-radius:99px; transition:width .3s ease; }
+  .bodymap-wrap{ display:flex; justify-content:center; padding:4px 0 2px; }
+  .bodymap-svg{ width:150px; height:190px; }
+  .bodymap-base{ fill:var(--surface-2); stroke:var(--border); stroke-width:1; }
+  .bodymap-region{ fill:var(--surface-2); stroke:var(--surface); stroke-width:1.5; cursor:pointer; transition:fill .15s ease; }
+  .bodymap-region:active{ fill:var(--accent-soft); }
+  .bodymap-region.is-active{ fill:var(--accent); }
   .note-row{ display:flex; align-items:flex-start; gap:12px; padding:12px 13px; border-bottom:1px solid var(--border); }
   .note-row:last-child{ border-bottom:none; }
   .note-bullet{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; margin-top:7px; }
@@ -388,6 +404,13 @@
   .hero-watermark{ position:absolute; right:-8px; top:-8px; width:88px; height:88px; opacity:.16; color:#fff; pointer-events:none; }
   .hero-watermark svg{ width:100%; height:100%; }
 
+  .week-summary-card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:14px; box-shadow:var(--shadow); }
+  .week-summary-row{ display:flex; align-items:stretch; }
+  .week-summary-row + .week-summary-row{ margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+  .week-summary-stat{ flex:1; text-align:center; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .week-summary-stat-icon svg{ width:17px; height:17px; }
+  .week-summary-stat-val{ font-family:'Sora',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:-.2px; margin-top:2px; }
+  .week-summary-stat-label{ font-size:10px; color:var(--text-faint); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
   .net-cal-card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:15px 14px; box-shadow:var(--shadow); margin-top:12px; }
   .net-cal-head{ display:flex; align-items:center; gap:9px; }
   .net-cal-icon{ width:26px; height:26px; border-radius:8px; background:var(--cal-soft); color:var(--cal); display:flex; align-items:center; justify-content:center; flex:none; }
@@ -850,6 +873,108 @@
     return { days: Object.keys(daySet).length, sets: setCount };
   }
 
+  /* ---------- hareket kütüphanesi + kas haritası ---------- */
+  var REGION_EXERCISES = {};
+  REGION_LIST.forEach(function(r){ REGION_EXERCISES[r] = []; });
+  Object.keys(EXERCISE_REGIONS_RAW).forEach(function(name){
+    var r = EXERCISE_REGIONS_RAW[name];
+    if (!REGION_EXERCISES[r]) REGION_EXERCISES[r] = [];
+    REGION_EXERCISES[r].push(name);
+  });
+  var FRONT_REGIONS = ['Göğüs','Omuz','Biceps','Karın','Bacak'];
+  var BACK_REGIONS = ['Sırt','Arka Omuz','Triceps','Trapez','Bacak','Baldır'];
+  function regionAllTimeStats(region){
+    var exSet = {}, setCount = 0, bestWeight = 0;
+    Object.keys(state.days).forEach(function(key){
+      var day = state.days[key];
+      (day.exercises||[]).forEach(function(ex){
+        if (regionForExercise(ex.name) !== region) return;
+        var sc = (ex.sets||[]).length;
+        if (!sc) return;
+        exSet[ex.name.toLowerCase()] = true;
+        setCount += sc;
+        ex.sets.forEach(function(s){ if (num(s.weight) > bestWeight) bestWeight = num(s.weight); });
+      });
+    });
+    return { exerciseCount: Object.keys(exSet).length, sets: setCount, bestWeight: bestWeight };
+  }
+  function exerciseLifetimeStats(name){
+    var hist = exerciseHistory(name);
+    var sessions = hist.length;
+    var bestWeight = 0;
+    hist.forEach(function(h){ h.sets.forEach(function(s){ if (num(s.weight) > bestWeight) bestWeight = num(s.weight); }); });
+    return { sessions: sessions, bestWeight: bestWeight };
+  }
+  function renderLibraryModal(){
+    var view = ui.libraryView;
+    var regions = view === 'front' ? FRONT_REGIONS : BACK_REGIONS;
+    var sel = ui.libraryRegion;
+    var html = '<div class="modal-overlay" data-action="close-library"><div class="modal" data-action="modal-noop">' +
+      '<div class="modal-head"><div><div class="modal-title">Hareket Kütüphanesi</div><div class="modal-sub">Bölgeye dokun, hareketleri gör</div></div>' +
+      '<button class="icon-btn" data-action="close-library">' + icon('close') + '</button></div>' +
+      '<div class="period-toggle" style="margin-bottom:12px">' +
+        [{key:'front',label:'Ön'},{key:'back',label:'Arka'}].map(function(v){
+          return '<button type="button" class="period-btn' + (view===v.key?' is-active':'') + '" data-action="set-library-view" data-view="' + v.key + '">' + v.label + '</button>';
+        }).join('') +
+      '</div>' +
+      renderBodyMapSvg(view, sel) +
+      '<div class="quick-add-row" style="padding:10px 2px 4px">' + regions.map(function(r){
+        var st = regionAllTimeStats(r);
+        return '<button type="button" class="quick-add-chip' + (sel===r?' is-active':'') + '" data-action="select-library-region" data-region="' + esc(r) + '">' + esc(r) + (st.exerciseCount ? ' · ' + st.sets : '') + '</button>';
+      }).join('') + '</div>';
+    if (sel){
+      var names = REGION_EXERCISES[sel] || [];
+      var allTime = regionAllTimeStats(sel);
+      html += '<div class="section-title">' + esc(sel) + (allTime.sets ? (' · ' + allTime.sets + ' set · en iyi ' + allTime.bestWeight + ' kg') : '') + '</div>';
+      if (!names.length){
+        html += '<div class="empty-state">Bu bölge için tanımlı hareket yok.</div>';
+      } else {
+        html += '<div class="check-list">' + names.map(function(n){
+          var lst = exerciseLifetimeStats(n);
+          var sub = lst.sessions ? (lst.sessions + ' seans · en iyi ' + lst.bestWeight + ' kg') : 'Henüz yapılmadı';
+          return '<div class="check-row" style="cursor:default">' +
+            '<div class="check-row-main"><div class="check-row-name">' + esc(n) + '</div><div class="check-row-sub">' + esc(sub) + '</div></div>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-action="add-library-exercise-today" data-name="' + esc(n) + '">' + icon('plus') + ' Bugüne Ekle</button>' +
+          '</div>';
+        }).join('') + '</div>';
+      }
+    }
+    html += '</div></div>';
+    return html;
+  }
+  function renderBodyMapSvg(view, sel){
+    function reg(name, pathD, cx, cy){
+      var isSel = sel === name;
+      return '<path d="' + pathD + '" class="bodymap-region' + (isSel?' is-active':'') + '" data-action="select-library-region" data-region="' + esc(name) + '"></path>';
+    }
+    var shapes;
+    if (view === 'front'){
+      shapes =
+        reg('Omuz', 'M28 30 Q24 22 34 20 L38 28 Q32 32 28 30 Z') +
+        reg('Omuz', 'M92 30 Q96 22 86 20 L82 28 Q88 32 92 30 Z') +
+        reg('Göğüs', 'M42 24 Q60 18 78 24 L76 46 Q60 52 44 46 Z') +
+        reg('Biceps', 'M26 32 Q20 44 24 58 L34 56 Q32 44 36 32 Z') +
+        reg('Biceps', 'M94 32 Q100 44 96 58 L86 56 Q88 44 84 32 Z') +
+        reg('Karın', 'M44 48 Q60 54 76 48 L74 72 Q60 78 46 72 Z') +
+        reg('Bacak', 'M46 80 Q60 86 74 80 L72 136 Q60 140 48 136 Z');
+    } else {
+      shapes =
+        reg('Arka Omuz', 'M28 30 Q24 22 34 20 L38 28 Q32 32 28 30 Z') +
+        reg('Arka Omuz', 'M92 30 Q96 22 86 20 L82 28 Q88 32 92 30 Z') +
+        reg('Trapez', 'M44 20 Q60 16 76 20 L72 30 Q60 34 48 30 Z') +
+        reg('Sırt', 'M42 32 Q60 28 78 32 L76 62 Q60 68 44 62 Z') +
+        reg('Triceps', 'M26 32 Q20 44 24 58 L34 56 Q32 44 36 32 Z') +
+        reg('Triceps', 'M94 32 Q100 44 96 58 L86 56 Q88 44 84 32 Z') +
+        reg('Bacak', 'M46 80 Q60 84 74 80 L72 116 Q60 120 48 116 Z') +
+        reg('Baldır', 'M48 118 Q60 122 72 118 L70 138 Q60 142 50 138 Z');
+    }
+    return '<div class="bodymap-wrap"><svg viewBox="0 0 120 150" class="bodymap-svg">' +
+      '<circle cx="60" cy="10" r="9" class="bodymap-base"></circle>' +
+      '<path d="M48 18 Q60 14 72 18 L72 24 Q60 20 48 24 Z" class="bodymap-base"></path>' +
+      shapes +
+    '</svg></div>';
+  }
+
   /* ---------- yardımcılar ---------- */
   function pad(n){ return n<10 ? '0'+n : ''+n; }
   function num(v, d){ var n = parseFloat(String(v==null?'':v).trim().replace(',', '.')); return isFinite(n) ? n : (d===undefined?0:d); }
@@ -930,7 +1055,11 @@
       play:'<path d="M7 4.5v15l13-7.5-13-7.5Z" stroke="currentColor" stroke-width="1.6" fill="currentColor" stroke-linejoin="round"/>',
       timer:'<circle cx="12" cy="13.5" r="8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 9.5V14l3 2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 2h5M12 2v2.6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>',
       note:'<path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M14.5 3v4.5H19" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
-      stop:'<rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/>'
+      stop:'<rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/>',
+      moon:'<path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/>',
+      trophy:'<path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M7 5H4a1 1 0 0 0-1 1v1a3 3 0 0 0 3 3M17 5h3a1 1 0 0 1 1 1v1a3 3 0 0 1-3 3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M12 13v3M9 20h6M9.5 16.5h5l.5 3.5h-6l.5-3.5Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
+      bodyMap:'<circle cx="12" cy="4" r="2.2" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M8.5 10c0-1.7 1.6-3 3.5-3s3.5 1.3 3.5 3v3.2l2.8 4.3M8.5 13.2l-2.8 4.3M8.5 10v4.5c0 1.3.4 2.6 1.1 3.7l.6 1.1M15.5 10v4.5c0 1.3-.4 2.6-1.1 3.7l-.6 1.1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+      target:'<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/>'
     };
     return '<svg viewBox="0 0 24 24" class="' + (cls||'') + '" fill="none">' + (paths[name]||'') + '</svg>';
   }
@@ -1001,7 +1130,7 @@
       v:1,
       settings:{
         goalCalories:2400, goalProtein:180, goalFat:80, goalCarb:260,
-        workoutGoalPerWeek:4, cardioGoalMinPerWeek:90, stepsGoalPerDay:8000, waterGoalMl:2500,
+        workoutGoalPerWeek:4, cardioGoalMinPerWeek:90, stepsGoalPerDay:8000, waterGoalMl:2500, sleepGoalHours:8,
         weeklyWeightGoalKg:-0.5, monthlyWeightGoalKg:-2
       },
       plan:{ 1:'push', 2:'rest', 3:'pull', 4:'legs', 5:'upper', 6:'rest', 0:'rest' },
@@ -1013,7 +1142,7 @@
       days:{}
     };
   }
-  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null, water:0, agenda:[], notes:[] }; }
+  function emptyDay(){ return { nutrition:[], workoutType:null, exercises:[], durationMin:null, cardio:[], steps:null, water:0, agenda:[], notes:[], sleepHours:null }; }
   function normalizeState(s){
     var d = defaultState();
     if (!s || typeof s !== 'object') return d;
@@ -1050,7 +1179,8 @@
           return { id: it.id || newId(), text: (typeof it.text === 'string') ? it.text : '' };
         }).filter(function(it){ return it.text; }) : (
           (typeof day.note === 'string' && day.note.trim()) ? [{ id:newId(), text: day.note.trim() }] : []
-        )
+        ),
+        sleepHours: (typeof day.sleepHours === 'number' && day.sleepHours > 0) ? day.sleepHours : null
       };
     });
     return out;
@@ -1114,7 +1244,10 @@
     activeExerciseId: null,
     agendaKey: null,
     agendaSubTab: 'plan',
-    homeSelectedDayKey: null
+    homeSelectedDayKey: null,
+    libraryOpen: false,
+    libraryView: 'front',
+    libraryRegion: null
   };
 
   /* ---------- ui durumunu hatırlama (sayfa aniden yenilenirse ana sayfaya atmasın) ---------- */
@@ -1685,6 +1818,44 @@
     if (!best) return null;
     return { weight:best.weight, reps:best.reps, dateObj:hist[0].dateObj };
   }
+  function sessionVolume(sets){
+    return (sets||[]).reduce(function(v,s){ return v + num(s.reps)*num(s.weight); }, 0);
+  }
+  function previousSessionVolume(name, excludeKey){
+    var hist = exerciseHistory(name, excludeKey);
+    if (!hist.length) return null;
+    return sessionVolume(hist[0].sets);
+  }
+  function suggestedTarget(name, excludeKey){
+    var hist = exerciseHistory(name, excludeKey);
+    if (!hist.length) return null;
+    var best = bestSetOf(hist[0].sets);
+    if (!best) return null;
+    return { weight: best.weight, reps: num(best.reps) + 1 };
+  }
+  function volumeDeltaBadge(currentVol, previousVol){
+    if (previousVol === null || previousVol === undefined || !isFinite(previousVol) || previousVol <= 0) return '';
+    var delta = round(currentVol - previousVol);
+    var color = delta > 0 ? '--good' : (delta < 0 ? '--bad' : '--text-faint');
+    var arrow = delta > 0 ? '▲' : (delta < 0 ? '▼' : '=');
+    var txt = delta === 0 ? 'aynı' : (delta > 0 ? '+' : '') + delta + ' kg';
+    return '<span style="color:var(' + color + ');font-weight:700;font-size:11px;margin-left:6px">' + arrow + ' ' + txt + '</span>';
+  }
+  function weeklyPrCount(days){
+    var count = 0;
+    days.forEach(function(d){
+      var key = keyForDate(d);
+      var day = state.days[key];
+      if (!day) return;
+      (day.exercises||[]).forEach(function(ex){
+        if (!ex.sets || !ex.sets.length) return;
+        var maxW = ex.sets.reduce(function(mx,s){ return Math.max(mx, num(s.weight)); }, 0);
+        var prev = previousSessionBest(ex.name, key);
+        if (prev && maxW > prev.weight) count++;
+      });
+    });
+    return count;
+  }
   function weightDeltaBadge(currentWeight, previousWeight){
     if (previousWeight === null || previousWeight === undefined || !isFinite(previousWeight)) return '';
     var delta = round10(currentWeight - previousWeight);
@@ -1871,6 +2042,7 @@
         (ui.weightModalOpen ? renderWeightModal() : '') +
         (ui.measureModalOpen ? renderMeasureModal() : '') +
         (ui.exerciseHistoryName ? renderExerciseHistoryModal(ui.exerciseHistoryName) : '') +
+        (ui.libraryOpen ? renderLibraryModal() : '') +
         renderAiFab() +
         (aiOpen ? renderAiModal() : '') +
       '</div>';
@@ -2033,6 +2205,10 @@
       '<div class="home-hero-msg">' + icon('flame') + esc(heroMsg) + '</div>' +
     '</div>';
 
+    html += renderDailyTasksCard();
+
+    html += '<div class="section-title">Bu Hafta Özet</div>' + renderWeeklySummaryCard();
+
     html += '<div class="period-toggle" style="margin:10px 0 4px">' + [{key:'day',label:'Gün'},{key:'week',label:'Hafta'},{key:'month',label:'Ay'}].map(function(p){
       return '<button class="period-btn' + (hp===p.key?' is-active':'') + '" data-action="set-home-period" data-period="' + p.key + '">' + p.label + '</button>';
     }).join('') + '</div>';
@@ -2070,6 +2246,7 @@
 
     html += renderStepsCard();
     html += renderWaterCard();
+    html += renderSleepCard();
 
     html += '<div class="section-title">Bu Hafta Genel Bakış</div>' + homeWeekStrip();
 
@@ -2081,13 +2258,93 @@
     return html;
   }
 
+  function dailyTaskRow(done, label, sub, action, extraAttrs){
+    return '<div class="check-row' + (done?' is-checked':'') + '" data-action="' + action + '"' + (extraAttrs||'') + '>' +
+      '<span class="check-circle">' + icon('check') + '</span>' +
+      '<div class="check-row-main"><div class="check-row-name' + (done?' is-done-text':'') + '">' + esc(label) + '</div>' +
+      (sub ? '<div class="check-row-sub">' + esc(sub) + '</div>' : '') + '</div>' +
+    '</div>';
+  }
+  function renderDailyTasksCard(){
+    var key = todayKey();
+    var d = dayOf(key);
+    var s = state.settings;
+    var today = new Date();
+    var wS = dayWorkoutSummary(today);
+    var cardio = dayCardioTotals(key);
+    var rows = '';
+    var doneCount = 0, totalCount = 0;
+    if (wS.type !== 'rest'){
+      totalCount++; if (wS.done) doneCount++;
+      rows += dailyTaskRow(wS.done, 'Antrenman: ' + typeInfo(wS.type).label, wS.done ? (wS.setCount + ' set tamamlandı') : 'Henüz başlanmadı', 'open-today-task', ' data-tab="workout"');
+    }
+    totalCount++; if (cardio.count > 0) doneCount++;
+    rows += dailyTaskRow(cardio.count>0, 'Kardiyo', cardio.count>0 ? (cardio.durationMin + ' dk kaydedildi') : 'Henüz kayıt yok', 'open-today-task', ' data-tab="cardio"');
+    totalCount++; if (d.steps) doneCount++;
+    rows += dailyTaskRow(!!d.steps, 'Adım gir', d.steps ? (d.steps.toLocaleString('tr-TR') + ' adım') : 'Henüz girilmedi', 'scroll-to-section', ' data-target="home-steps-anchor"');
+    var waterGoal = s.waterGoalMl||2500;
+    var waterDone = (d.water||0) >= waterGoal;
+    totalCount++; if (waterDone) doneCount++;
+    rows += dailyTaskRow(waterDone, 'Su hedefi', (d.water||0) ? ((d.water||0).toLocaleString('tr-TR') + ' / ' + waterGoal.toLocaleString('tr-TR') + ' ml') : 'Henüz girilmedi', 'scroll-to-section', ' data-target="home-water-anchor"');
+    totalCount++; if (d.sleepHours) doneCount++;
+    rows += dailyTaskRow(!!d.sleepHours, 'Uyku gir', d.sleepHours ? (d.sleepHours + ' saat') : 'Dün gece kaç saat uyudun?', 'scroll-to-section', ' data-target="home-sleep-anchor"');
+    (d.agenda||[]).forEach(function(it){
+      totalCount++; if (it.done) doneCount++;
+      rows += '<div class="check-row' + (it.done?' is-checked':'') + '" data-action="toggle-agenda-item" data-key="' + key + '" data-id="' + it.id + '">' +
+        '<span class="check-circle">' + icon('check') + '</span>' +
+        '<div class="check-row-main"><div class="check-row-name' + (it.done?' is-done-text':'') + '">' +
+        (it.time ? '<span class="num" style="color:var(--text-faint);margin-right:7px">' + esc(it.time) + '</span>' : '') +
+        esc(it.text) + '</div></div>' +
+      '</div>';
+    });
+    var pct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
+    return '<div class="section-title">Bugünün Görevleri</div>' +
+      '<div class="daily-tasks-card">' +
+        '<div class="daily-tasks-progress"><span class="daily-tasks-progress-label">' + doneCount + '/' + totalCount + '</span>' +
+          '<div class="daily-tasks-progress-track"><div class="daily-tasks-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<span class="daily-tasks-progress-label">%' + pct + '</span></div>' +
+        '<div class="check-list">' + rows + '</div>' +
+      '</div>';
+  }
+  function weekSummaryStat(iconName, val, label, colorVar){
+    return '<div class="week-summary-stat"><div class="week-summary-stat-icon" style="color:var(' + colorVar + ')">' + icon(iconName) + '</div>' +
+      '<div class="week-summary-stat-val">' + val + '</div><div class="week-summary-stat-label">' + label + '</div></div>';
+  }
+  function renderWeeklySummaryCard(){
+    var s = state.settings;
+    var week = currentWeekDays();
+    var doneCount = 0;
+    week.forEach(function(d){ if (dayWorkoutSummary(d).done) doneCount++; });
+    var goal = s.workoutGoalPerWeek || 1;
+    var routinePct = goal>0 ? Math.min(100, Math.round((doneCount/goal)*100)) : 0;
+    var waterDays = 0, waterSum = 0, sleepDays = 0, sleepSum = 0;
+    week.forEach(function(d){
+      var day = state.days[keyForDate(d)];
+      if (day && day.water){ waterSum += day.water; waterDays++; }
+      if (day && day.sleepHours){ sleepSum += day.sleepHours; sleepDays++; }
+    });
+    var waterAvg = waterDays ? Math.round(waterSum/waterDays) : 0;
+    var sleepAvg = sleepDays ? Math.round((sleepSum/sleepDays)*10)/10 : 0;
+    var prCount = weeklyPrCount(week);
+    return '<div class="week-summary-card">' +
+        '<div class="week-summary-row">' +
+          weekSummaryStat('dumbbell', doneCount + '/' + goal, 'Antrenman', '--pull') +
+          weekSummaryStat('target', '%' + routinePct, 'Rutin Uyum', routinePct>=100?'--good':'--accent') +
+          weekSummaryStat('trophy', String(prCount), 'Yeni Rekor', prCount>0?'--good':'--text-faint') +
+        '</div>' +
+        '<div class="week-summary-row">' +
+          weekSummaryStat('droplet', waterDays ? (waterAvg.toLocaleString('tr-TR')+' ml') : '—', 'Ort. Su', '--carb') +
+          weekSummaryStat('moon', sleepDays ? (sleepAvg+' sa') : '—', 'Ort. Uyku', '--sleep') +
+        '</div>' +
+      '</div>';
+  }
   function renderStepsCard(){
     var key = todayKey();
     var d = dayOf(key);
     var goal = state.settings.stepsGoalPerDay || 8000;
     var cur = d.steps || 0;
     var pct = goal > 0 ? Math.min(100, (cur / goal) * 100) : 0;
-    return '<div class="section-title">Adım</div>' +
+    return '<div class="section-title" id="home-steps-anchor">Adım</div>' +
       '<div class="stat-card">' +
         '<div style="display:flex;align-items:center;justify-content:space-between">' +
           '<div style="display:flex;align-items:center;gap:10px">' +
@@ -2116,7 +2373,7 @@
     var goal = state.settings.waterGoalMl || 2500;
     var cur = d.water || 0;
     var pct = goal > 0 ? Math.min(100, (cur / goal) * 100) : 0;
-    return '<div class="section-title">Su</div>' +
+    return '<div class="section-title" id="home-water-anchor">Su</div>' +
       '<div class="stat-card">' +
         '<div style="display:flex;align-items:center;justify-content:space-between">' +
           '<div style="display:flex;align-items:center;gap:10px">' +
@@ -2131,6 +2388,30 @@
             return '<button type="button" class="quick-add-chip" data-action="add-water" data-ml="' + ml + '">' + icon('droplet') + '+' + ml + ' ml</button>';
           }).join('') +
           (cur > 0 ? '<button type="button" class="quick-add-chip" data-action="reset-water">Sıfırla</button>' : '') +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderSleepCard(){
+    var key = todayKey();
+    var d = dayOf(key);
+    var goal = state.settings.sleepGoalHours || 8;
+    var cur = d.sleepHours || 0;
+    var pct = goal > 0 ? Math.min(100, (cur / goal) * 100) : 0;
+    return '<div class="section-title" id="home-sleep-anchor">Uyku</div>' +
+      '<div class="stat-card">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div class="home-tile-icon" style="background:var(--sleep-soft);color:var(--sleep)">' + icon('moon') + '</div>' +
+            '<div><div class="stat-card-val" style="font-size:18px">' + (cur ? (cur.toLocaleString('tr-TR') + ' sa') : '—') + '<span> / ' + goal + ' sa</span></div></div>' +
+          '</div>' +
+          (cur ? '<div class="home-tile-pct" style="background:var(--sleep-soft);color:var(--sleep)">%' + round(pct) + '</div>' : '') +
+        '</div>' +
+        '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + pct + '%;background:var(--sleep)"></div></div>' +
+        '<div class="quick-add-row" style="padding-top:12px">' +
+          [5,6,6.5,7,7.5,8,9].map(function(h){
+            return '<button type="button" class="quick-add-chip' + (cur===h?' is-active':'') + '" data-action="set-sleep-quick" data-hours="' + h + '">' + h + ' sa</button>';
+          }).join('') +
         '</div>' +
       '</div>';
   }
@@ -2191,6 +2472,8 @@
           '<div><div class="day-sum-item-label">Adım</div><div class="day-sum-item-val">' + (d.steps ? d.steps.toLocaleString('tr-TR') : '—') + '</div></div></div>' +
         '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--carb-soft);color:var(--carb)">' + icon('droplet') + '</div>' +
           '<div><div class="day-sum-item-label">Su</div><div class="day-sum-item-val">' + (d.water ? d.water.toLocaleString('tr-TR') + ' ml' : '—') + '</div></div></div>' +
+        '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--sleep-soft);color:var(--sleep)">' + icon('moon') + '</div>' +
+          '<div><div class="day-sum-item-label">Uyku</div><div class="day-sum-item-val">' + (d.sleepHours ? d.sleepHours + ' sa' : '—') + '</div></div></div>' +
         '<div class="day-sum-item"><div class="day-sum-item-icon" style="background:var(--surface-2);color:var(--text-dim)">' + icon('note') + '</div>' +
           '<div><div class="day-sum-item-label">Not & Ajanda</div><div class="day-sum-item-val">' + (d.agenda.length ? (d.agenda.filter(function(a){return a.done;}).length + '/' + d.agenda.length + ' tamam') : ((d.notes&&d.notes.length) ? (d.notes.length + ' not') : '—')) + '</div></div></div>' +
       '</div>' +
@@ -2546,9 +2829,10 @@
 
   /* ---------- Antrenman içeriği ---------- */
   function renderWorkoutContent(){
-    if (ui.period === 'month') return renderWorkoutMonth();
-    if (ui.period === 'week') return renderWorkoutWeekList();
-    return renderWorkoutDayList();
+    var libBtn = '<button type="button" class="btn btn-ghost btn-block" style="margin-bottom:10px" data-action="open-library">' + icon('bodyMap') + ' Hareket Kütüphanesi</button>';
+    if (ui.period === 'month') return libBtn + renderWorkoutMonth();
+    if (ui.period === 'week') return libBtn + renderWorkoutWeekList();
+    return libBtn + renderWorkoutDayList();
   }
 
   function renderWorkoutSummary(scope){
@@ -2898,16 +3182,33 @@
         var histPerf = !lastSet ? lastPerformance(ex.name, key) : null;
         var prefillReps = lastSet ? lastSet.reps : (histPerf ? histPerf.reps : (planEntry && planEntry.repMin ? planEntry.repMin : ''));
         var prefillWeight = lastSet ? lastSet.weight : (histPerf ? histPerf.weight : (planEntry && planEntry.targetWeight ? planEntry.targetWeight : ''));
-        var histNote = (!lastSet && histPerf) ? '<div class="hint" style="margin-top:2px">Son sefer: ' + histPerf.reps + '×' + histPerf.weight + 'kg</div>' : '';
+        var suggestion = (!lastSet) ? suggestedTarget(ex.name, key) : null;
+        var histNote = (!lastSet && histPerf) ? ('<div class="hint" style="margin-top:2px">Son sefer: ' + histPerf.reps + '×' + histPerf.weight + 'kg' + (suggestion ? (' · <span style="color:var(--accent);font-weight:600">Öneri: ' + suggestion.weight + 'kg × ' + suggestion.reps + '</span>') : '') + '</div>') : '';
         var prevBest = previousSessionBest(ex.name, key);
-        var analysisNote = (prevBest && maxToday > 0)
-          ? ('<div class="hint" style="margin-top:2px">Önceki en iyi: ' + prevBest.weight + ' kg' + weightDeltaBadge(maxToday, prevBest.weight) + '</div>')
-          : '';
+        var isNewPr = !!(prevBest && maxToday > prevBest.weight);
+        var prFirstIdx = -1;
+        if (isNewPr){
+          for (var pi=0; pi<ex.sets.length; pi++){ if (num(ex.sets[pi].weight) === maxToday){ prFirstIdx = pi; break; } }
+        }
+        var todayVol = sessionVolume(ex.sets);
+        var prevVol = previousSessionVolume(ex.name, key);
+        var analysisNote = '';
+        if (maxToday > 0){
+          if (isNewPr){
+            analysisNote += '<div class="hint" style="margin-top:2px;color:var(--good);font-weight:700">' + icon('trophy','mini-ico') + ' Yeni Rekor! Önceki: ' + prevBest.weight + ' kg</div>';
+          } else if (prevBest){
+            analysisNote += '<div class="hint" style="margin-top:2px">Önceki en iyi: ' + prevBest.weight + ' kg' + weightDeltaBadge(maxToday, prevBest.weight) + '</div>';
+          }
+          if (prevVol !== null){
+            analysisNote += '<div class="hint" style="margin-top:2px">Hacim: ' + round(todayVol).toLocaleString('tr-TR') + ' kg' + volumeDeltaBadge(todayVol, prevVol) + ' (geçen: ' + round(prevVol).toLocaleString('tr-TR') + ' kg)</div>';
+          }
+        }
         return '<div class="ex-card"><div class="ex-card-head"><div><button type="button" class="ex-card-name" data-action="open-exercise-history" data-name="' + esc(ex.name) + '" style="background:none;border:none;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer;color:inherit;font:inherit">' + esc(ex.name) + '</button> ' + regionNote + (targetNote ? '<div class="hint" style="margin-top:2px">' + targetNote + '</div>' : '') + histNote + analysisNote + '</div>' +
           '<button class="del-btn" data-action="delete-exercise" data-key="' + key + '" data-exid="' + ex.id + '">' + icon('trash') + '</button></div>' +
           (ex.sets.length ? ('<div class="set-head-row"><span></span><span>Tekrar</span><span>Kilo (kg)</span><span></span></div>' +
             ex.sets.map(function(s, i){
-              return '<div class="set-row"><span class="set-row-label">' + (i+1) + '</span><div class="num">' + s.reps + '</div><div class="num">' + s.weight + ' kg</div>' +
+              var rowPr = (i === prFirstIdx);
+              return '<div class="set-row"><span class="set-row-label">' + (i+1) + '</span><div class="num">' + s.reps + '</div><div class="num">' + s.weight + ' kg' + (rowPr ? (' <span class="mini-ico" style="color:var(--good)">' + icon('trophy') + '</span>') : '') + '</div>' +
                 '<button class="del-btn" data-action="delete-set" data-key="' + key + '" data-exid="' + ex.id + '" data-setidx="' + i + '">' + icon('trash') + '</button></div>';
             }).join('')) : '<div class="hint" style="margin-bottom:8px">Henüz set yok.</div>') +
           '<div class="set-add-row">' +
@@ -3076,6 +3377,7 @@
         '<div class="field-row cols-2">' +
           '<div class="field"><label>Günlük adım hedefi</label><input id="s-sg" type="text" inputmode="numeric" value="' + s.stepsGoalPerDay + '"></div>' +
           '<div class="field"><label>Günlük su hedefi (ml)</label><input id="s-wat" type="text" inputmode="numeric" value="' + (s.waterGoalMl||2500) + '"></div>' +
+          '<div class="field"><label>Günlük uyku hedefi (saat)</label><input id="s-sleep" type="text" inputmode="decimal" value="' + (s.sleepGoalHours||8) + '"></div>' +
         '</div>' +
         '<div class="field-row cols-2">' +
           '<div class="field"><label>Haftalık kilo hedefi (kg)</label><input id="s-wwg" type="text" inputmode="decimal" step="0.1" value="' + s.weeklyWeightGoalKg + '"></div>' +
@@ -3464,10 +3766,42 @@
       renderAll(); return;
     }
     if (action === 'set-home-period'){ ui.homePeriod = btn.getAttribute('data-period'); renderAll(); return; }
+    if (action === 'open-today-task'){
+      var ottTab = btn.getAttribute('data-tab');
+      ui.tab = ottTab; ui.period = 'day'; ui.cursor = new Date();
+      renderAll(); return;
+    }
+    if (action === 'scroll-to-section'){
+      var stsEl = document.getElementById(btn.getAttribute('data-target'));
+      if (stsEl && stsEl.scrollIntoView) stsEl.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
     if (action === 'toggle-home-macro'){ ui.homeMacroExpanded = !ui.homeMacroExpanded; renderAll(); return; }
     if (action === 'toggle-home-workout'){ ui.homeWorkoutExpanded = !ui.homeWorkoutExpanded; renderAll(); return; }
     if (action === 'open-exercise-history'){ ui.exerciseHistoryName = btn.getAttribute('data-name'); renderAll(); return; }
     if (action === 'close-exercise-history'){ ui.exerciseHistoryName = null; renderAll(); return; }
+    if (action === 'open-library'){ ui.libraryOpen = true; renderAll(); return; }
+    if (action === 'close-library'){ ui.libraryOpen = false; ui.libraryRegion = null; renderAll(); return; }
+    if (action === 'set-library-view'){ ui.libraryView = btn.getAttribute('data-view'); renderAll(); return; }
+    if (action === 'select-library-region'){
+      var slrRegion = btn.getAttribute('data-region');
+      ui.libraryRegion = (ui.libraryRegion === slrRegion) ? null : slrRegion;
+      renderAll(); return;
+    }
+    if (action === 'add-library-exercise-today'){
+      var alName = btn.getAttribute('data-name');
+      var alKey = todayKey();
+      var alDay = dayOf(alKey);
+      var alExisting = alDay.exercises.filter(function(e){ return e.name.toLowerCase() === alName.toLowerCase(); })[0];
+      if (!alExisting){
+        alExisting = { id:newId(), name:alName, sets:[] };
+        alDay.exercises.push(alExisting);
+      }
+      ui.activeExerciseId = alExisting.id;
+      ui.libraryOpen = false; ui.libraryRegion = null;
+      ui.tab = 'workout'; ui.period = 'day'; ui.cursor = new Date();
+      scheduleSave(); renderAll(); return;
+    }
     if (action === 'modal-noop'){ return; }
     if (action === 'ai-open'){ aiOpen = true; renderAll(); return; }
     if (action === 'ai-close'){ aiOpen = false; renderAll(); return; }
@@ -3616,6 +3950,12 @@
       dayOf(todayKey()).water = 0;
       scheduleSave(); renderAll(); return;
     }
+    if (action === 'set-sleep-quick'){
+      var slVal = num(btn.getAttribute('data-hours'), 0);
+      var slDay = dayOf(todayKey());
+      slDay.sleepHours = (slDay.sleepHours === slVal) ? null : (slVal > 0 ? slVal : null);
+      scheduleSave(); renderAll(); return;
+    }
     if (action === 'activate-exercise'){
       ui.activeExerciseId = btn.getAttribute('data-exid');
       renderAll(); return;
@@ -3740,6 +4080,7 @@
       s.cardioGoalMinPerWeek = num(document.getElementById('s-cg').value, s.cardioGoalMinPerWeek);
       s.stepsGoalPerDay = num(document.getElementById('s-sg').value, s.stepsGoalPerDay);
       s.waterGoalMl = num(document.getElementById('s-wat').value, s.waterGoalMl);
+      s.sleepGoalHours = num(document.getElementById('s-sleep').value, s.sleepGoalHours);
       s.weeklyWeightGoalKg = num(document.getElementById('s-wwg').value, s.weeklyWeightGoalKg);
       s.monthlyWeightGoalKg = num(document.getElementById('s-mwg').value, s.monthlyWeightGoalKg);
       ui.settingsOpen = false;

@@ -22,6 +22,20 @@ renk paletini kullanıyor). İçindeki yapay zeka asistanı Plan sekmesindeki
 ajanda/not içeriğini de görüyor ve sorulduğunda onlar hakkında cevap
 verebiliyor, gerekirse yeni madde/not da ekleyebiliyor.
 
+Ana Sayfa'da artık **Bugünün Görevleri** kartı var: antrenman, kardiyo, adım,
+su, uyku ve o güne ait ajanda maddeleri tek bir tiklenebilir listede birleşiyor
+(üstte kaç tanesinin tamamlandığı görünüyor). Altında **Bu Hafta Özet** kartı
+antrenman günü/hedefi, rutin uyum %'si, bu hafta kırılan rekor sayısı, ortalama
+su ve uyku miktarını gösteriyor. Yeni bir **Uyku** kartı (Ayarlar'dan hedef
+saat belirlenebiliyor) su/adım kartlarının yanına eklendi. Antrenman
+sekmesinde her egzersiz artık geçmiş performansa göre bir **ilerleme önerisi**
+(aynı kilo + 1 tekrar fazla), bu oturum ile geçen oturumun **hacim
+karşılaştırması** ve o ana kadarki en ağır seti geçtiğinde bir **"Yeni
+Rekor!" rozetini** gösteriyor. Antrenman sekmesindeki **Hareket Kütüphanesi**
+butonu ön/arka vücut haritası üzerinden bölgeye (göğüs, sırt, bacak vb.)
+tıklayarak o bölgenin hareketlerini, geçmiş performanslarını ve "Bugüne Ekle"
+kısayolunu gösteren bir pencere açıyor.
+
 ## Kurulum (tek seferlik)
 
 1. `firebase-config.js` dosyasını Firebase Console > Proje Ayarları > Web
