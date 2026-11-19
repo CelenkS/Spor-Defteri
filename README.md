@@ -36,6 +36,30 @@ butonu ön/arka vücut haritası üzerinden bölgeye (göğüs, sırt, bacak vb.
 tıklayarak o bölgenin hareketlerini, geçmiş performanslarını ve "Bugüne Ekle"
 kısayolunu gösteren bir pencere açıyor.
 
+**"Seviye Atla" görsel yenileme (RPG tarzı tasarım):** Uygulamanın tüm görünümü
+artık koyu/siyah zemin + turuncu vurgulu bir tema kullanıyor (varsayılan tema
+artık her zaman bu — sistem Aydınlık modda olsa da; Ayarlar'dan isteyen yine
+Aydınlık/Sistem'e geçebilir). Ana Sayfa'da **Seviye/XP kartı** artık gerçekten
+görünüyor: büyük "LV" rozeti, bloklu (segmentli) XP çubuğu ve seviyeye göre
+otomatik hesaplanan bir **rütbe** (BRONZ → GÜMÜŞ → ALTIN → PLATİN → ELMAS →
+USTA, her biri I-V alt kademeli). Karta dokunulunca **"Puanın"** penceresi
+açılıyor: "Bugün" ve ilk aktif günün ("Gün 1 Değerlendirmesi") istatistikleri
+yan yana, Bugün sekmesinde her istatistik için Gün 1'e göre yeşil/kırmızı artış
+rozetiyle. Seviye kartındaki **"Odaklan"** butonu yeni bir **odaklanma sayacı**
+açıyor (15/25/45/60 dk seçilebilir, dairesel geri sayım); tamamlanan her
+oturum o günün Odak puanına ve toplam XP'ye ekleniyor, pencere kapatılsa bile
+alt çubukta sayaç görünmeye devam ediyor. **Bugünün Görevleri** kartına
+**Yapılacak / Tamam / Atlandı** sekmeleri eklendi — bekleyen bir görevi "Atla"
+ile o günlük listeden çıkarıp istersen "Geri al" ile geri getirebiliyorsun;
+en öncelikli bekleyen görev (antrenman/kardiyo) ayrıca üstte büyük bir "Günün
+Görevi" kartı olarak öne çıkıyor.
+
+**Dinlenme sayacı artık "bitmiyor":** Bir set kaydettiğinde açılan 2 dakikalık
+dinlenme sayacı artık süre dolunca kaybolmuyor — turuncudan kırmızıya dönüp
+hafifçe nabız gibi atan bir "fazla mesai" durumuna geçiyor, "Dinlenme süresi
+doldu!" yazıyor ve geçen ek süreyi `+dk:sn` olarak saymaya devam ediyor; yeni
+bir set eklediğinde veya durdur butonuna bastığında kapanıyor.
+
 ## Kurulum (tek seferlik)
 
 1. `firebase-config.js` dosyasını Firebase Console > Proje Ayarları > Web
